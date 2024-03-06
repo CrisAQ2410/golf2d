@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <SDL2/SDL_image.h>
 
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 720;
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
 
 bool init();
 
@@ -47,7 +47,7 @@ bool loadMedia()
 {
 	bool success = true;
 
-	gHelloWorld = IMG_Load( "img_src/background.jpg" );
+	gHelloWorld = IMG_Load( "img_src/bg.png" );
 	if( gHelloWorld == NULL )
 	{
 		printf( "Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError() );
