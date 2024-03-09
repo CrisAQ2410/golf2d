@@ -198,8 +198,6 @@ int main(int argc, char* args[]) {
     int dragEndX, dragEndY;
     float dragDistance = 0.0f;
     float maxDragDistance = 200.0f;
-    int count = 0;
-
 
     // Main loop
     bool quit = false;
@@ -247,8 +245,6 @@ int main(int argc, char* args[]) {
                 isBallReleased = false;
             }
 
-            count++;
-
             // Kiểm tra va chạm giữa quả bóng và các chướng ngại vật
             for (int i = 0; i < NUM_OBSTACLES; ++i) {
                 if (checkCollision(ball, obstacles[i])) {
@@ -262,8 +258,6 @@ int main(int argc, char* args[]) {
                 // Ví dụ: Cho quả bóng biến mất
                 ball.x = -1000; // Di chuyển quả bóng ra khỏi màn hình
                 ball.y = -1000; // Di chuyển quả bóng ra khỏi màn hình
-
-                printf("Qua bong vao lo sau %d lan di chuyen.\n", count);
 
             }
  

@@ -9,6 +9,10 @@
 #include "mouse_handler.h"
 #include "physics_handler.h"
 #include "obstacles_random.h"
+#include "check_collision.h"
+#include "handle_collision.h"
+#include "hole_random.h"
+#include "check_hole_collision.h"
 
 Ball ball;
 SDL_Window* window = NULL;
@@ -43,8 +47,8 @@ int main(int argc, char* args[]) {
 
     generateRandomObstacles(obstacles, NUM_OBSTACLES, renderer);
 
-    //Hole hole;
-    //generateRandomHole(hole, renderer);
+    Hole hole;
+    generateRandomHole(hole, renderer);
 
     SDL_Surface* ballSurface = IMG_Load("img_src/ball.png");
     if (!ballSurface) {
@@ -70,15 +74,30 @@ int main(int argc, char* args[]) {
             }
             handleMouseEvents(e);
         }
+        if (isBallReleased) {
+            handlePhysics();
+            for (int i = 0; i < NUM_OBSTACLES; ++i) {
+                if (checkCollision(ball, obstacles[i])) {
+                    handleCollision(ball, obstacles[i]);
+                }
+            }
+            if (checkHoleCollision(ball, hole)) {
+                ball.x = -1000; 
+                ball.y = -1000; 
 
-        handlePhysics();
-
+            }
+            ball.velX *= FRICTION;
+            ball.velY *= FRICTION;
+        }
+            
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
         for (int i = 0; i < NUM_OBSTACLES; ++i) {
             SDL_Rect obstacleRect = { (int)(obstacles[i].x - obstacles[i].width / 2), (int)(obstacles[i].y - obstacles[i].height / 2), obstacles[i].width, obstacles[i].height };
             SDL_RenderCopy(renderer, obstacles[i].texture, NULL, &obstacleRect);
         }
+        SDL_Rect holeRect = { (int)(hole.x - hole.width / 2), (int)(hole.y - hole.height / 2), hole.width, hole.height };
+        SDL_RenderCopy(renderer, hole.texture, NULL, &holeRect);
         SDL_Rect dstRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
         SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
         SDL_RenderPresent(renderer);
