@@ -1,6 +1,6 @@
 #include "physics_handler.h"
 
-void handlePhysics(Ball& ball, bool& isBallReleased) {
+void handlePhysics() {
     if (isBallReleased) {
         ball.x += ball.velX;
         ball.y += ball.velY;
@@ -18,10 +18,4 @@ void handlePhysics(Ball& ball, bool& isBallReleased) {
         ball.velX *= FRICTION;
         ball.velY *= FRICTION;
     }
-}
-
-
-void renderBall(SDL_Renderer* renderer, SDL_Texture* ballTexture, const Ball& ball) {
-    SDL_Rect dstRect = {(int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height};
-    SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
 }
