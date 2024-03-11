@@ -42,7 +42,7 @@ int main(int argc, char* args[]) {
 
     srand(time(NULL));
 
-    const int NUM_OBSTACLES = 15;
+    const int NUM_OBSTACLES = 24;
     Obstacle obstacles[NUM_OBSTACLES];
 
     generateRandomObstacles(obstacles, NUM_OBSTACLES, renderer);
@@ -58,8 +58,8 @@ int main(int argc, char* args[]) {
     SDL_Texture* ballTexture = SDL_CreateTextureFromSurface(renderer, ballSurface);
     SDL_FreeSurface(ballSurface);
 
-    ball.x = WINDOW_WIDTH / 2;
-    ball.y = WINDOW_HEIGHT / 2;
+    ball.x = rand() % WINDOW_WIDTH;
+    ball.y = rand() % WINDOW_HEIGHT;
     ball.velX = 0;
     ball.velY = 0;
     SDL_QueryTexture(ballTexture, NULL, NULL, &ball.width, &ball.height);
@@ -82,9 +82,21 @@ int main(int argc, char* args[]) {
                 }
             }
             if (checkHoleCollision(ball, hole)) {
-                ball.x = -1000; 
-                ball.y = -1000; 
 
+                float distanceToHole = sqrt((ball.x - hole.x) * (ball.x - hole.x) + (ball.y - hole.y) * (ball.y - hole.y));
+                float angleToHole = atan2(hole.y - ball.y, hole.x - ball.x);
+
+                float speed = 5.0f;
+                ball.velX = speed * cos(angleToHole);
+                ball.velY = speed * sin(angleToHole);
+
+                ball.x += ball.velX;
+                ball.y += ball.velY;
+
+                if (distanceToHole < 10.0f) { 
+                    ball.velX = 0;
+                    ball.velY = 0;
+                }
             }
             ball.velX *= FRICTION;
             ball.velY *= FRICTION;

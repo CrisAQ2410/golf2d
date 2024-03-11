@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <string>
 #include <cmath>
 #include <cstdlib>
@@ -31,7 +32,6 @@ struct Hole {
     int width, height; // Kích thước của hố
     SDL_Texture* texture; // Texture của hố
 };
-
 
 // Hàm kiểm tra va chạm giữa quả bóng và chướng ngại vật
 bool checkCollision(const Ball& ball, const Obstacle& obstacle) {
@@ -76,7 +76,6 @@ void handleCollision(Ball& ball, const Obstacle& obstacle) {
     ball.velY -= 2 * relativeVelocity * normalY;
 }
 
-// Tạo vị trí ngẫu nhiên cho các chướng ngại vật và lựa chọn ngẫu nhiên hình ảnh
 void generateRandomObstacles(Obstacle obstacles[], int numObstacles, SDL_Renderer* renderer) {
     // Mảng các đường dẫn đến các hình ảnh chướng ngại vật
     std::vector<std::string> obstacleImages = {
@@ -85,11 +84,27 @@ void generateRandomObstacles(Obstacle obstacles[], int numObstacles, SDL_Rendere
         // Thêm các đường dẫn đến các hình ảnh khác nếu cần
     };
 
+    // Khoảng cách tối thiểu giữa các chướng ngại vật
+    const int minDistance = 100;
+
     for (int i = 0; i < numObstacles; ++i) {
-        obstacles[i].x = rand() % WINDOW_WIDTH;
-        obstacles[i].y = rand() % WINDOW_HEIGHT;
-        obstacles[i].width = 50; // Kích thước có thể được thiết lập tùy ý
-        obstacles[i].height = 50; // Kích thước có thể được thiết lập tùy ý
+        bool collision = true;
+        while (collision) {
+            obstacles[i].x = rand() % WINDOW_WIDTH;
+            obstacles[i].y = rand() % WINDOW_HEIGHT;
+            obstacles[i].width = 50; // Kích thước có thể được thiết lập tùy ý
+            obstacles[i].height = 50; // Kích thước có thể được thiết lập tùy ý
+
+            // Kiểm tra va chạm với các chướng ngại vật đã được tạo trước đó
+            collision = false;
+            for (int j = 0; j < i; ++j) {
+                if (abs(obstacles[i].x - obstacles[j].x) < minDistance &&
+                    abs(obstacles[i].y - obstacles[j].y) < minDistance) {
+                    collision = true;
+                    break;
+                }
+            }
+        }
 
         // Chọn ngẫu nhiên một hình ảnh từ bộ sưu tập
         int randomIndex = rand() % obstacleImages.size();
@@ -139,7 +154,6 @@ bool checkHoleCollision(const Ball& ball, const Hole& hole) {
     return false;
 }
 
-
 int main(int argc, char* args[]) {
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
@@ -147,6 +161,7 @@ int main(int argc, char* args[]) {
     // Khởi tạo SDL2
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG); // Khởi tạo thư viện để load ảnh PNG
+    TTF_Init();
 
     // Tạo cửa sổ
     window = SDL_CreateWindow("Golf 2D", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
@@ -165,7 +180,7 @@ int main(int argc, char* args[]) {
     srand(time(NULL));
 
     // Tạo một mảng chứa các chướng ngại vật
-    const int NUM_OBSTACLES = 15; // Số lượng chướng ngại vật
+    const int NUM_OBSTACLES = 24; // Số lượng chướng ngại vật
     Obstacle obstacles[NUM_OBSTACLES];
 
     // Thiết lập vị trí của các chướng ngại vật và chọn ngẫu nhiên hình ảnh
@@ -190,7 +205,7 @@ int main(int argc, char* args[]) {
     ball.texture = SDL_CreateTextureFromSurface(renderer, ballSurface);
     SDL_FreeSurface(ballSurface);
     SDL_QueryTexture(ball.texture, NULL, NULL, &ball.width, &ball.height);
-    
+
     SDL_Event e;
     bool isBallReleased = false;
     bool isDragging = false;
@@ -203,7 +218,6 @@ int main(int argc, char* args[]) {
     bool quit = false;
     while (!quit) {
         // Xử lý sự kiện
-        SDL_Event e;
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
@@ -225,6 +239,7 @@ int main(int argc, char* args[]) {
                 isDragging = false;
                 isBallReleased = true; // Đánh dấu rằng quả bóng đã được thả ra
                 dragDistance = 0.0f;
+                
             }
         }
 
@@ -255,12 +270,25 @@ int main(int argc, char* args[]) {
 
             if (checkHoleCollision(ball, hole)) {
                 // Xử lý khi quả bóng chạm vào hố
-                // Ví dụ: Cho quả bóng biến mất
-                ball.x = -1000; // Di chuyển quả bóng ra khỏi màn hình
-                ball.y = -1000; // Di chuyển quả bóng ra khỏi màn hình
+                float distanceToHole = sqrt((ball.x - hole.x) * (ball.x - hole.x) + (ball.y - hole.y) * (ball.y - hole.y));
+                float angleToHole = atan2(hole.y - ball.y, hole.x - ball.x);
 
+                // Thiết lập vận tốc của quả bóng để nó di chuyển theo hướng của lỗ
+                float speed = 5.0f; // Tốc độ di chuyển của quả bóng vào lỗ
+                ball.velX = speed * cos(angleToHole);
+                ball.velY = speed * sin(angleToHole);
+
+                // Di chuyển quả bóng mỗi lần vòng lặp
+                ball.x += ball.velX;
+                ball.y += ball.velY;
+
+                // Kiểm tra nếu quả bóng đủ gần lỗ, thì dừng lại
+                if (distanceToHole < 10.0f) { // Điều chỉnh giá trị này tùy theo độ lớn của lỗ
+                    ball.velX = 0;
+                    ball.velY = 0;
+                }
             }
- 
+
             // Giảm dần vận tốc của quả bóng
             ball.velX *= FRICTION;
             ball.velY *= FRICTION;
@@ -286,21 +314,23 @@ int main(int argc, char* args[]) {
         SDL_Rect ballRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
         SDL_RenderCopy(renderer, ball.texture, NULL, &ballRect);
 
-        // Hiển thị cửa sổ
+        // Cập nhật cửa sổ
         SDL_RenderPresent(renderer);
-        SDL_Delay(10); // Throttle the frame rate
+
+        // Thêm độ trễ ngắn để không quá tải CPU
+        SDL_Delay(10);
     }
 
-    // Giải phóng bộ nhớ và thoát SDL2
+    // Giải phóng bộ nhớ
+    SDL_DestroyTexture(backgroundTexture);
     SDL_DestroyTexture(ball.texture);
     for (int i = 0; i < NUM_OBSTACLES; ++i) {
         SDL_DestroyTexture(obstacles[i].texture);
     }
-    SDL_DestroyTexture(backgroundTexture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    IMG_Quit();
-    SDL_Quit();
+    IMG_Quit(); // Tắt SDL_image
+    SDL_Quit(); // Tắt SDL
 
     return 0;
 }
