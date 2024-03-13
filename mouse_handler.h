@@ -12,6 +12,8 @@ extern int dragEndX, dragEndY;
 extern float dragDistance;
 extern float maxDragDistance;
 extern Ball ball;
+extern int strokes;
+extern int score;
 
 void handleMouseEvents(SDL_Event& e);
 

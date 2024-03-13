@@ -15,5 +15,7 @@ void handleMouseEvents(SDL_Event& e) {
         isDragging = false;
         isBallReleased = true;
         dragDistance = 0.0f;
+        strokes ++;
+        if (strokes > 1) score -=5;
     }
 }

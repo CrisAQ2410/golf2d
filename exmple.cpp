@@ -157,6 +157,8 @@ bool checkHoleCollision(const Ball& ball, const Hole& hole) {
 int main(int argc, char* args[]) {
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
+    TTF_Font* font = NULL;
+    SDL_Color textColor = {255, 255, 255}; // Màu văn bản là trắng
 
     // Khởi tạo SDL2
     SDL_Init(SDL_INIT_VIDEO);
@@ -166,6 +168,13 @@ int main(int argc, char* args[]) {
     // Tạo cửa sổ
     window = SDL_CreateWindow("Golf 2D", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    // Khởi tạo font
+    font = TTF_OpenFont("font/font.ttf", 30);
+    if (!font) {
+        printf("Unable to load font: %s\n", TTF_GetError());
+        return 1;
+    }
 
     // Load hình ảnh background từ tệp tin
     SDL_Surface* backgroundSurface = IMG_Load("img_src/bg.png");
@@ -214,18 +223,25 @@ int main(int argc, char* args[]) {
     float dragDistance = 0.0f;
     float maxDragDistance = 200.0f;
 
+    int strokes = 0;
+    int score = 200;
+
     // Main loop
+    bool win = false;
     bool quit = false;
     while (!quit) {
         // Xử lý sự kiện
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
-            } else if (e.type == SDL_MOUSEBUTTONDOWN && !isDragging && !isBallReleased) {
+            } 
+            else if (e.type == SDL_MOUSEBUTTONDOWN && !isDragging && !isBallReleased) {
                 // Khi chuột được nhấn, ghi lại vị trí xuất phát của chuột và đặt biến isDragging thành true
                 isDragging = true;
                 SDL_GetMouseState(&dragStartX, &dragStartY);
+                
             } else if (e.type == SDL_MOUSEMOTION && isDragging) {
+                
                 // Khi người dùng di chuyển chuột, tính toán vận tốc của quả bóng dựa trên hướng kéo chuột
                 SDL_GetMouseState(&dragEndX, &dragEndY);
                 dragDistance = std::hypot(dragEndX - dragStartX, dragEndY - dragStartY);
@@ -234,13 +250,15 @@ int main(int argc, char* args[]) {
                 float angle = atan2(dragEndY - dragStartY, dragEndX - dragStartX);
                 ball.velX = -dragDistance * cos(angle) / 10.0f;
                 ball.velY = -dragDistance * sin(angle) / 10.0f;
+
             } else if (e.type == SDL_MOUSEBUTTONUP && isDragging) {
                 // Khi chuột được nhả, thiết lập biến isDragging thành false và đặt lại vận tốc của quả bóng
                 isDragging = false;
                 isBallReleased = true; // Đánh dấu rằng quả bóng đã được thả ra
                 dragDistance = 0.0f;
-                
-            }
+                strokes ++;
+                if (strokes > 1) score -=5;
+            } 
         }
 
         if (isBallReleased) {
@@ -286,6 +304,7 @@ int main(int argc, char* args[]) {
                 if (distanceToHole < 10.0f) { // Điều chỉnh giá trị này tùy theo độ lớn của lỗ
                     ball.velX = 0;
                     ball.velY = 0;
+                    win = true;
                 }
             }
 
@@ -314,6 +333,52 @@ int main(int argc, char* args[]) {
         SDL_Rect ballRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
         SDL_RenderCopy(renderer, ball.texture, NULL, &ballRect);
 
+        // Vẽ và cập nhật điểm
+        SDL_Surface* scoreSurface = TTF_RenderText_Solid(font, ("Score: " + std::to_string(score)).c_str(), textColor);
+        SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
+        SDL_Rect scoreRect = {350, 570, scoreSurface->w, scoreSurface->h};
+        SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreRect);
+        SDL_FreeSurface(scoreSurface);
+        SDL_DestroyTexture(scoreTexture);
+
+        // Vẽ và cập nhật điểm
+        SDL_Surface* strokesSurface = TTF_RenderText_Solid(font, ("Strokes: " + std::to_string(strokes)).c_str(), textColor);
+        SDL_Texture* strokesTexture = SDL_CreateTextureFromSurface(renderer, strokesSurface);
+        SDL_Rect strokesRect = {350, 1, strokesSurface->w, strokesSurface->h};
+        SDL_RenderCopy(renderer, strokesTexture, NULL, &strokesRect);
+        SDL_FreeSurface(strokesSurface);
+        SDL_DestroyTexture(strokesTexture);
+         if (win) {
+
+            // Vẽ khung
+            SDL_Rect frameRect = { WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 };
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+            SDL_RenderFillRect(renderer, &frameRect);
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            SDL_RenderDrawRect(renderer, &frameRect);
+
+            SDL_Surface* scoreSurface = TTF_RenderText_Solid(font, ("Your score: " + std::to_string(score)).c_str(), textColor);
+            SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
+            SDL_Rect scoreRect = {WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2 + 30, scoreSurface->w, scoreSurface->h};
+            SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreRect);
+            SDL_FreeSurface(scoreSurface);
+            SDL_DestroyTexture(scoreTexture);
+
+            SDL_Surface* strokesSurface = TTF_RenderText_Solid(font, ("Your strokes: " + std::to_string(strokes)).c_str(), textColor);
+            SDL_Texture* strokesTexture = SDL_CreateTextureFromSurface(renderer, strokesSurface);
+            SDL_Rect strokesRect = {WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2, strokesSurface->w, strokesSurface->h};
+            SDL_RenderCopy(renderer, strokesTexture, NULL, &strokesRect);
+            SDL_FreeSurface(strokesSurface);
+            SDL_DestroyTexture(strokesTexture);
+
+            SDL_Surface* winSurface = TTF_RenderText_Solid(font,"Congratulations! You Won!", textColor);
+            SDL_Texture* winTexture = SDL_CreateTextureFromSurface(renderer, winSurface);
+            SDL_Rect winRect = {WINDOW_WIDTH / 2 - 130, WINDOW_HEIGHT / 2 - 50, winSurface->w, winSurface->h};
+            SDL_RenderCopy(renderer, winTexture, NULL, &winRect);
+            SDL_FreeSurface(winSurface);
+            SDL_DestroyTexture(winTexture);
+         }
+
         // Cập nhật cửa sổ
         SDL_RenderPresent(renderer);
 
@@ -329,6 +394,7 @@ int main(int argc, char* args[]) {
     }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    TTF_CloseFont(font);
     IMG_Quit(); // Tắt SDL_image
     SDL_Quit(); // Tắt SDL
 

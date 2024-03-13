@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <string>
 #include <cmath>
 #include <cstdlib>
@@ -17,20 +18,40 @@
 Ball ball;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
+TTF_Font* font = NULL;
+SDL_Color textColor = {255, 255, 255};
 bool isBallReleased = false;
 bool isDragging = false;
 int dragStartX, dragStartY;
 int dragEndX, dragEndY;
 float dragDistance = 0.0f;
 float maxDragDistance = 200.0f;
+int strokes = 0;
+int score = 200;
+
+void renderText(SDL_Renderer* renderer, const char* text, SDL_Color color, int x, int y) {
+    SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_Rect dstRect = { x, y, surface->w, surface->h };
+    SDL_RenderCopy(renderer, texture, NULL, &dstRect);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
+}
 
 int main(int argc, char* args[]) {
 
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
+    TTF_Init();
 
     window = SDL_CreateWindow("Golf 2D", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    font = TTF_OpenFont("font/font.ttf", 30);
+    if (!font) {
+        printf("Unable to load font: %s\n", TTF_GetError());
+        return 1;
+    }
 
     SDL_Surface* backgroundSurface = IMG_Load("img_src/bg.png");
     if (!backgroundSurface) {
@@ -65,6 +86,7 @@ int main(int argc, char* args[]) {
     SDL_QueryTexture(ballTexture, NULL, NULL, &ball.width, &ball.height);
 
     SDL_Event e;
+    bool win = false;
     bool quit = false;
 
     while (!quit) {
@@ -96,6 +118,7 @@ int main(int argc, char* args[]) {
                 if (distanceToHole < 10.0f) { 
                     ball.velX = 0;
                     ball.velY = 0;
+                    win = true;
                 }
             }
             ball.velX *= FRICTION;
@@ -112,6 +135,23 @@ int main(int argc, char* args[]) {
         SDL_RenderCopy(renderer, hole.texture, NULL, &holeRect);
         SDL_Rect dstRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
         SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
+        std::string strokesText = "Strokes: " + std::to_string(strokes);
+        std::string scoreText = "Score: " + std::to_string(score);
+        renderText(renderer, strokesText.c_str(), textColor, 350, 1);
+        renderText(renderer, scoreText.c_str(), textColor, 350, 570);
+        if (win) {
+            SDL_Rect frameRect = { WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 };
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+            SDL_RenderFillRect(renderer, &frameRect);
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            SDL_RenderDrawRect(renderer, &frameRect);
+            std::string winText = "Congratulations! You Win!";
+            std::string strokesText = "Your strokes: " + std::to_string(strokes);
+            std::string scoreText = "Your score: " + std::to_string(score);
+            renderText(renderer, winText.c_str(), textColor, WINDOW_WIDTH / 2 - 130, WINDOW_HEIGHT / 2 - 50);
+            renderText(renderer, strokesText.c_str(), textColor, WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2);
+            renderText(renderer, scoreText.c_str(), textColor, WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2 + 30);
+        } 
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
     }
@@ -125,3 +165,4 @@ int main(int argc, char* args[]) {
 
     return 0;
 }
+
