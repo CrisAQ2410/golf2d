@@ -47,7 +47,7 @@ int main(int argc, char* args[]) {
     window = SDL_CreateWindow("Golf 2D", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    font = TTF_OpenFont("font/font.ttf", 30);
+    font = TTF_OpenFont("font/font.ttf", 35);
     if (!font) {
         printf("Unable to load font: %s\n", TTF_GetError());
         return 1;
@@ -60,6 +60,14 @@ int main(int argc, char* args[]) {
     }
     SDL_Texture* backgroundTexture = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
     SDL_FreeSurface(backgroundSurface);
+
+    SDL_Surface* logoSurface = IMG_Load("img_src/logo.png");
+    if (!logoSurface) {
+        printf("Unable to load logo image: %s\n", IMG_GetError());
+        return 1;
+    }
+    SDL_Texture* logoTexture = SDL_CreateTextureFromSurface(renderer, logoSurface);
+    SDL_FreeSurface(logoSurface);
 
     srand(time(NULL));
 
@@ -85,77 +93,96 @@ int main(int argc, char* args[]) {
     ball.velY = 0;
     SDL_QueryTexture(ballTexture, NULL, NULL, &ball.width, &ball.height);
 
+    int logoWidth = 350;
+    int logoHeight = 300;
+
     SDL_Event e;
     bool win = false;
     bool quit = false;
+    bool menuDisplayed = true;
 
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
+            if (menuDisplayed && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
+                menuDisplayed = false;
+                isBallReleased = true; // Start the game
+            }
             handleMouseEvents(e);
         }
-        if (isBallReleased) {
-            handlePhysics();
-            for (int i = 0; i < NUM_OBSTACLES; ++i) {
-                if (checkCollision(ball, obstacles[i])) {
-                    handleCollision(ball, obstacles[i]);
+        
+        if (!menuDisplayed) {
+            if (isBallReleased) {
+                handlePhysics();
+                for (int i = 0; i < NUM_OBSTACLES; ++i) {
+                    if (checkCollision(ball, obstacles[i])) {
+                        handleCollision(ball, obstacles[i]);
+                    }
                 }
-            }
-            if (checkHoleCollision(ball, hole)) {
+                if (checkHoleCollision(ball, hole)) {
+                    float distanceToHole = sqrt((ball.x - hole.x) * (ball.x - hole.x) + (ball.y - hole.y) * (ball.y - hole.y));
+                    float angleToHole = atan2(hole.y - ball.y, hole.x - ball.x);
 
-                float distanceToHole = sqrt((ball.x - hole.x) * (ball.x - hole.x) + (ball.y - hole.y) * (ball.y - hole.y));
-                float angleToHole = atan2(hole.y - ball.y, hole.x - ball.x);
+                    float speed = 5.0f;
+                    ball.velX = speed * cos(angleToHole);
+                    ball.velY = speed * sin(angleToHole);
 
-                float speed = 5.0f;
-                ball.velX = speed * cos(angleToHole);
-                ball.velY = speed * sin(angleToHole);
+                    ball.x += ball.velX;
+                    ball.y += ball.velY;
 
-                ball.x += ball.velX;
-                ball.y += ball.velY;
-
-                if (distanceToHole < 10.0f) { 
-                    ball.velX = 0;
-                    ball.velY = 0;
-                    win = true;
+                    if (distanceToHole < 10.0f) { 
+                        ball.velX = 0;
+                        ball.velY = 0;
+                        win = true;
+                    }
                 }
+                ball.velX *= FRICTION;
+                ball.velY *= FRICTION;
             }
-            ball.velX *= FRICTION;
-            ball.velY *= FRICTION;
-        }
             
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
-        for (int i = 0; i < NUM_OBSTACLES; ++i) {
-            SDL_Rect obstacleRect = { (int)(obstacles[i].x - obstacles[i].width / 2), (int)(obstacles[i].y - obstacles[i].height / 2), obstacles[i].width, obstacles[i].height };
-            SDL_RenderCopy(renderer, obstacles[i].texture, NULL, &obstacleRect);
+            SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+            for (int i = 0; i < NUM_OBSTACLES; ++i) {
+                SDL_Rect obstacleRect = { (int)(obstacles[i].x - obstacles[i].width / 2), (int)(obstacles[i].y - obstacles[i].height / 2), obstacles[i].width, obstacles[i].height };
+                SDL_RenderCopy(renderer, obstacles[i].texture, NULL, &obstacleRect);
+            }
+            SDL_Rect holeRect = { (int)(hole.x - hole.width / 2), (int)(hole.y - hole.height / 2), hole.width, hole.height };
+            SDL_RenderCopy(renderer, hole.texture, NULL, &holeRect);
+            SDL_Rect dstRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
+            SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
+            std::string strokesText = "Strokes: " + std::to_string(strokes);
+            std::string scoreText = "Score: " + std::to_string(score);
+            renderText(renderer, strokesText.c_str(), textColor, 350, 1);
+            renderText(renderer, scoreText.c_str(), textColor, 350, 565);
+            if (win) {
+                SDL_Rect frameRect = { WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 };
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
+                SDL_RenderFillRect(renderer, &frameRect);
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                SDL_RenderDrawRect(renderer, &frameRect);
+                std::string winText = "Congratulations! You Win!";
+                std::string strokesText = "Your strokes: " + std::to_string(strokes);
+                std::string scoreText = "Your score: " + std::to_string(score);
+                renderText(renderer, winText.c_str(), textColor, WINDOW_WIDTH / 2 - 150, WINDOW_HEIGHT / 2 - 50);
+                renderText(renderer, strokesText.c_str(), textColor, WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2);
+                renderText(renderer, scoreText.c_str(), textColor, WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2 + 30);
+            }
         }
-        SDL_Rect holeRect = { (int)(hole.x - hole.width / 2), (int)(hole.y - hole.height / 2), hole.width, hole.height };
-        SDL_RenderCopy(renderer, hole.texture, NULL, &holeRect);
-        SDL_Rect dstRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
-        SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
-        std::string strokesText = "Strokes: " + std::to_string(strokes);
-        std::string scoreText = "Score: " + std::to_string(score);
-        renderText(renderer, strokesText.c_str(), textColor, 350, 1);
-        renderText(renderer, scoreText.c_str(), textColor, 350, 570);
-        if (win) {
-            SDL_Rect frameRect = { WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 };
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
-            SDL_RenderFillRect(renderer, &frameRect);
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-            SDL_RenderDrawRect(renderer, &frameRect);
-            std::string winText = "Congratulations! You Win!";
-            std::string strokesText = "Your strokes: " + std::to_string(strokes);
-            std::string scoreText = "Your score: " + std::to_string(score);
-            renderText(renderer, winText.c_str(), textColor, WINDOW_WIDTH / 2 - 130, WINDOW_HEIGHT / 2 - 50);
-            renderText(renderer, strokesText.c_str(), textColor, WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2);
-            renderText(renderer, scoreText.c_str(), textColor, WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2 + 30);
-        } 
+        else { // Menu displayed
+            SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+            SDL_Rect logoRect = {230, 50, logoWidth, logoHeight};
+            SDL_RenderCopy(renderer, logoTexture, NULL, &logoRect);
+            renderText(renderer, "Left click anywhere to start", textColor, (WINDOW_WIDTH - 350) / 2, (WINDOW_HEIGHT + logoHeight) / 2 + 20);
+        }
+
         SDL_RenderPresent(renderer);
         SDL_Delay(10);
     }
 
+    SDL_DestroyTexture(logoTexture);
     SDL_DestroyTexture(ballTexture);
     SDL_DestroyTexture(backgroundTexture);
     SDL_DestroyRenderer(renderer);
@@ -165,4 +192,3 @@ int main(int argc, char* args[]) {
 
     return 0;
 }
-
