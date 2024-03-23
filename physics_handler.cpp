@@ -6,7 +6,7 @@ void handlePhysics() {
     ball.x += ball.velX;
     ball.y += ball.velY;
     if (ball.x - ball.width / 2 < 0 || ball.x + ball.width / 2 > WINDOW_WIDTH) {
-        ball.velX = -ball.velX; 
+        ball.velX = -ball.velX;
     }
     if (ball.y - ball.height / 2 < 0 || ball.y + ball.height / 2 > WINDOW_HEIGHT) {
         ball.velY = -ball.velY; 

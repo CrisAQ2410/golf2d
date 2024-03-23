@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include <string>
 #include <cmath>
 #include <cstdlib>
@@ -185,6 +186,37 @@ int main(int argc, char* args[]) {
     SDL_Texture* backgroundTexture = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
     SDL_FreeSurface(backgroundSurface);
 
+    // Khởi tạo SDL Mixer
+    if (Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3) {
+        printf("Mix_Init: %s\n", Mix_GetError());
+        // Xử lý lỗi khi không thể khởi tạo SDL Mixer
+    }
+
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("Mix_OpenAudio: %s\n", Mix_GetError());
+        // Xử lý lỗi khi không thể mở kênh âm thanh
+    }
+
+    // Tải âm thanh
+    Mix_Chunk* holeSound = Mix_LoadWAV("sound/hole.mp3");
+    if (!holeSound) {
+        printf("Mix_LoadWAV: %s\n", Mix_GetError());
+        // Xử lý lỗi khi không thể tải âm thanh
+    }
+
+    // Tải âm thanh cho va chạm
+    Mix_Chunk* collisionSound = Mix_LoadWAV("sound/swing.mp3");
+    if (!collisionSound) {
+        printf("Mix_LoadWAV: %s\n", Mix_GetError());
+        // Xử lý lỗi khi không thể tải âm thanh
+    }
+
+    // Tải âm thanh khi kéo bóng
+    Mix_Chunk* chargeSound = Mix_LoadWAV("sound/charge.mp3");
+    if (!chargeSound) {
+        printf("Mix_LoadWAV: %s\n", Mix_GetError());
+    }
+
     // Seed cho hàm random
     srand(time(NULL));
 
@@ -252,6 +284,7 @@ int main(int argc, char* args[]) {
                 ball.velY = -dragDistance * sin(angle) / 10.0f;
 
             } else if (e.type == SDL_MOUSEBUTTONUP && isDragging) {
+                Mix_PlayChannel(-1, chargeSound, 0);
                 // Khi chuột được nhả, thiết lập biến isDragging thành false và đặt lại vận tốc của quả bóng
                 isDragging = false;
                 isBallReleased = true; // Đánh dấu rằng quả bóng đã được thả ra
@@ -265,13 +298,15 @@ int main(int argc, char* args[]) {
             // Cập nhật vị trí của quả bóng và xử lý va chạm với các chướng ngại vật
             ball.x += ball.velX;
             ball.y += ball.velY;
-
+  
             // Xử lý va chạm với viền màn hình
             if (ball.x - ball.width / 2 < 0 || ball.x + ball.width / 2 > WINDOW_WIDTH) {
                 ball.velX = -ball.velX; // Đảo ngược hướng di chuyển khi va chạm với cạnh trái hoặc phải
+                Mix_PlayChannel(-1, collisionSound, 0);
             }
             if (ball.y - ball.height / 2 < 0 || ball.y + ball.height / 2 > WINDOW_HEIGHT) {
                 ball.velY = -ball.velY; // Đảo ngược hướng di chuyển khi va chạm với cạnh trên hoặc dưới
+                Mix_PlayChannel(-1, collisionSound, 0);
             }
 
             if (fabs(ball.velX) < 0.1 && fabs(ball.velY) < 0.1) {
@@ -281,12 +316,14 @@ int main(int argc, char* args[]) {
             // Kiểm tra va chạm giữa quả bóng và các chướng ngại vật
             for (int i = 0; i < NUM_OBSTACLES; ++i) {
                 if (checkCollision(ball, obstacles[i])) {
+                    Mix_PlayChannel(-1, collisionSound, 0);
                     // Xử lý va chạm giữa quả bóng và chướng ngại vật
                     handleCollision(ball, obstacles[i]);
                 }
             }
 
             if (checkHoleCollision(ball, hole)) {
+                Mix_PlayChannel(-1, holeSound, 0);
                 // Xử lý khi quả bóng chạm vào hố
                 float distanceToHole = sqrt((ball.x - hole.x) * (ball.x - hole.x) + (ball.y - hole.y) * (ball.y - hole.y));
                 float angleToHole = atan2(hole.y - ball.y, hole.x - ball.x);
@@ -348,7 +385,7 @@ int main(int argc, char* args[]) {
         SDL_RenderCopy(renderer, strokesTexture, NULL, &strokesRect);
         SDL_FreeSurface(strokesSurface);
         SDL_DestroyTexture(strokesTexture);
-         if (win) {
+        if (win) {
 
             // Vẽ khung
             SDL_Rect frameRect = { WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 };
