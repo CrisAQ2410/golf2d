@@ -11,6 +11,7 @@
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
+const float FRICTION = 0.98f;
 
 struct Ball {
     float x, y;

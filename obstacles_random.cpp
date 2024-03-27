@@ -7,14 +7,15 @@ void generateRandomObstacles(Obstacle obstacles[], int numObstacles, SDL_Rendere
     };
 
     const int minDistance = 100;
+    Hole hole;
 
     for (int i = 0; i < numObstacles; ++i) {
         bool collision = true;
         while (collision) {
             obstacles[i].x = rand() % WINDOW_WIDTH;
             obstacles[i].y = rand() % WINDOW_HEIGHT;
-            obstacles[i].width = 50; 
-            obstacles[i].height = 50; 
+            obstacles[i].width = 50;
+            obstacles[i].height = 50;
 
             collision = false;
             for (int j = 0; j < i; ++j) {
@@ -23,6 +24,10 @@ void generateRandomObstacles(Obstacle obstacles[], int numObstacles, SDL_Rendere
                     collision = true;
                     break;
                 }
+            }
+            if (abs(obstacles[i].x - hole.x) < minDistance &&
+                abs(obstacles[i].y - hole.y) < minDistance) {
+                collision = true;
             }
         }
 

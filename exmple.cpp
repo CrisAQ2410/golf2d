@@ -78,32 +78,35 @@ void handleCollision(Ball& ball, const Obstacle& obstacle) {
 }
 
 void generateRandomObstacles(Obstacle obstacles[], int numObstacles, SDL_Renderer* renderer) {
-    // Mảng các đường dẫn đến các hình ảnh chướng ngại vật
     std::vector<std::string> obstacleImages = {
         "img_src/tile32_light.png",
         "img_src/tile32_dark.png"
-        // Thêm các đường dẫn đến các hình ảnh khác nếu cần
     };
 
-    // Khoảng cách tối thiểu giữa các chướng ngại vật
     const int minDistance = 100;
+    Hole hole;
 
     for (int i = 0; i < numObstacles; ++i) {
         bool collision = true;
         while (collision) {
             obstacles[i].x = rand() % WINDOW_WIDTH;
             obstacles[i].y = rand() % WINDOW_HEIGHT;
-            obstacles[i].width = 50; // Kích thước có thể được thiết lập tùy ý
-            obstacles[i].height = 50; // Kích thước có thể được thiết lập tùy ý
+            obstacles[i].width = 50;
+            obstacles[i].height = 50;
 
-            // Kiểm tra va chạm với các chướng ngại vật đã được tạo trước đó
             collision = false;
+            // Kiểm tra va chạm với các vật thể đã tạo trước đó
             for (int j = 0; j < i; ++j) {
                 if (abs(obstacles[i].x - obstacles[j].x) < minDistance &&
                     abs(obstacles[i].y - obstacles[j].y) < minDistance) {
                     collision = true;
                     break;
                 }
+            }
+            // Kiểm tra va chạm với hố
+            if (abs(obstacles[i].x - hole.x) < minDistance &&
+                abs(obstacles[i].y - hole.y) < minDistance) {
+                collision = true;
             }
         }
 
@@ -118,6 +121,7 @@ void generateRandomObstacles(Obstacle obstacles[], int numObstacles, SDL_Rendere
         SDL_FreeSurface(obstacleSurface);
     }
 }
+
 
 void generateRandomHole(Hole& hole, SDL_Renderer* renderer) {
     // Load hình ảnh của hố từ tệp tin
