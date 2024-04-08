@@ -32,6 +32,10 @@ float maxDragDistance = 200.0f;
 int strokes = 0;
 int score = 200;
 
+bool blink = false;
+int blinkCounter = 0;
+const int blinkThreshold = 30; 
+
 int main(int argc, char* args[]) {
 
     SDL_Init(SDL_INIT_VIDEO);
@@ -130,6 +134,13 @@ int main(int argc, char* args[]) {
             handleMouseEvents(e);
         }
         
+        blinkCounter++;
+
+        if (blinkCounter >= blinkThreshold) {
+            blink = !blink;
+            blinkCounter = 0;
+        }
+
         if (!menuDisplayed) {
             if (isBallReleased) {
                 ball.x += ball.velX;
@@ -206,7 +217,10 @@ int main(int argc, char* args[]) {
             SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
             SDL_Rect logoRect = {230, 50, logoWidth, logoHeight};
             SDL_RenderCopy(renderer, logoTexture, NULL, &logoRect);
-            renderText(renderer, "Left click anywhere to start", textColor, (WINDOW_WIDTH - 350) / 2, (WINDOW_HEIGHT + logoHeight) / 2 + 20);
+            
+            if (blink) {
+                renderText(renderer, "Left click anywhere to start", textColor, (WINDOW_WIDTH - 350) / 2, (WINDOW_HEIGHT + logoHeight) / 2 + 20);
+            }
         }
 
         SDL_RenderPresent(renderer);
