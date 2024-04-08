@@ -17,5 +17,5 @@ void handleMouseEvents(SDL_Event& e) {
         dragDistance = 0.0f;
         strokes ++;
         if (strokes > 1) score -=5;
-    }
+    } 
 }

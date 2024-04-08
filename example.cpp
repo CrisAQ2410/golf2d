@@ -159,6 +159,22 @@ bool checkHoleCollision(const Ball& ball, const Hole& hole) {
     return false;
 }
 
+void resetGame(Ball& ball, Obstacle obstacles[], Hole& hole, int& score, int& strokes, bool& win, SDL_Renderer* renderer) {
+    ball.x = rand() % WINDOW_WIDTH; // Vị trí ngẫu nhiên trên trục x
+    ball.y = rand() % WINDOW_HEIGHT; // Vị trí ngẫu nhiên trên trục y
+    ball.velX = 0; // Vận tốc ban đầu là 0
+    ball.velY = 0; // Vận tốc ban đầu là 0
+
+    const int NUM_OBSTACLES = 24; // Số lượng chướng ngại vật
+
+    generateRandomObstacles(obstacles, NUM_OBSTACLES, renderer);
+    generateRandomHole(hole, renderer);
+
+    score = 200;
+    strokes = 0;
+    win = false;
+}
+
 int main(int argc, char* args[]) {
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
@@ -295,7 +311,11 @@ int main(int argc, char* args[]) {
                 dragDistance = 0.0f;
                 strokes ++;
                 if (strokes > 1) score -=5;
-            } 
+            } else if (e.type == SDL_KEYDOWN) {
+                if (e.key.keysym.sym == SDLK_r && win) {
+                    resetGame(ball, obstacles, hole, score, strokes, win, renderer);
+                }
+            }
         }
 
         if (isBallReleased) {
@@ -400,24 +420,31 @@ int main(int argc, char* args[]) {
 
             SDL_Surface* scoreSurface = TTF_RenderText_Solid(font, ("Your score: " + std::to_string(score)).c_str(), textColor);
             SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
-            SDL_Rect scoreRect = {WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2 + 30, scoreSurface->w, scoreSurface->h};
+            SDL_Rect scoreRect = {WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2 , scoreSurface->w, scoreSurface->h};
             SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreRect);
             SDL_FreeSurface(scoreSurface);
             SDL_DestroyTexture(scoreTexture);
 
             SDL_Surface* strokesSurface = TTF_RenderText_Solid(font, ("Your strokes: " + std::to_string(strokes)).c_str(), textColor);
             SDL_Texture* strokesTexture = SDL_CreateTextureFromSurface(renderer, strokesSurface);
-            SDL_Rect strokesRect = {WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2, strokesSurface->w, strokesSurface->h};
+            SDL_Rect strokesRect = {WINDOW_WIDTH / 2 - 80, WINDOW_HEIGHT / 2 - 40, strokesSurface->w, strokesSurface->h};
             SDL_RenderCopy(renderer, strokesTexture, NULL, &strokesRect);
             SDL_FreeSurface(strokesSurface);
             SDL_DestroyTexture(strokesTexture);
 
             SDL_Surface* winSurface = TTF_RenderText_Solid(font,"Congratulations! You Won!", textColor);
             SDL_Texture* winTexture = SDL_CreateTextureFromSurface(renderer, winSurface);
-            SDL_Rect winRect = {WINDOW_WIDTH / 2 - 130, WINDOW_HEIGHT / 2 - 50, winSurface->w, winSurface->h};
+            SDL_Rect winRect = {WINDOW_WIDTH / 2 - 130, WINDOW_HEIGHT / 2 - 80, winSurface->w, winSurface->h};
             SDL_RenderCopy(renderer, winTexture, NULL, &winRect);
             SDL_FreeSurface(winSurface);
             SDL_DestroyTexture(winTexture);
+
+            SDL_Surface* restartSurface = TTF_RenderText_Solid(font,"Press R to restart", textColor);
+            SDL_Texture* restartTexture = SDL_CreateTextureFromSurface(renderer, restartSurface);
+            SDL_Rect restartRect = {WINDOW_WIDTH / 2 - 100, WINDOW_HEIGHT / 2 + 40, restartSurface->w, restartSurface->h};
+            SDL_RenderCopy(renderer, restartTexture, NULL, &restartRect);
+            SDL_FreeSurface(restartSurface);
+            SDL_DestroyTexture(restartTexture);
          }
 
         // Cập nhật cửa sổ

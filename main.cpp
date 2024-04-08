@@ -14,11 +14,14 @@
 #include "handle_collision.h"
 #include "hole_random.h"
 #include "check_hole_collision.h"
+#include "render_text.h"
+
+using namespace std;
 
 Ball ball;
+TTF_Font *font = NULL;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
-TTF_Font* font = NULL;
 SDL_Color textColor = {255, 255, 255};
 bool isBallReleased = false;
 bool isDragging = false;
@@ -28,15 +31,6 @@ float dragDistance = 0.0f;
 float maxDragDistance = 200.0f;
 int strokes = 0;
 int score = 200;
-
-void renderText(SDL_Renderer* renderer, const char* text, SDL_Color color, int x, int y) {
-    SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect dstRect = { x, y, surface->w, surface->h };
-    SDL_RenderCopy(renderer, texture, NULL, &dstRect);
-    SDL_FreeSurface(surface);
-    SDL_DestroyTexture(texture);
-}
 
 int main(int argc, char* args[]) {
 
@@ -189,8 +183,8 @@ int main(int argc, char* args[]) {
             SDL_RenderCopy(renderer, hole.texture, NULL, &holeRect);
             SDL_Rect dstRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
             SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
-            std::string strokesText = "Strokes: " + std::to_string(strokes);
-            std::string scoreText = "Score: " + std::to_string(score);
+            string strokesText = "Strokes: " + to_string(strokes);
+            string scoreText = "Score: " + to_string(score);
             renderText(renderer, strokesText.c_str(), textColor, 350, 1);
             renderText(renderer, scoreText.c_str(), textColor, 350, 565);
             if (win) {
@@ -199,9 +193,9 @@ int main(int argc, char* args[]) {
                 SDL_RenderFillRect(renderer, &frameRect);
                 SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
                 SDL_RenderDrawRect(renderer, &frameRect);
-                std::string winText = "Congratulations! You Won!";
-                std::string strokesText = "Your strokes: " + std::to_string(strokes);
-                std::string scoreText = "Your score: " + std::to_string(score);
+                string winText = "Congratulations! You Won!";
+                string strokesText = "Your strokes: " + to_string(strokes);
+                string scoreText = "Your score: " + to_string(score);
                 renderText(renderer, winText.c_str(), textColor, WINDOW_WIDTH / 2 - 160, WINDOW_HEIGHT / 2 - 50);
                 renderText(renderer, strokesText.c_str(), textColor, WINDOW_WIDTH / 2 - 90, WINDOW_HEIGHT / 2);
                 renderText(renderer, scoreText.c_str(), textColor, WINDOW_WIDTH / 2 - 90, WINDOW_HEIGHT / 2 + 30);
