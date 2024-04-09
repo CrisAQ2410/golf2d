@@ -12,6 +12,6 @@
 #include "hole_random.h"
 #include "obstacles_random.h"
 
-void resetGame(Ball& ball, Obstacle obstacles[], Hole& hole, int& score, int& strokes, bool& win, SDL_Renderer* renderer)
+void resetGame(Ball& ball, Obstacle obstacles[], Hole& hole, int& score, int& strokes, bool& win, SDL_Renderer* renderer);
 
 #endif // RESTART_H

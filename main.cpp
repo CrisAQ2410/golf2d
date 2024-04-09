@@ -31,6 +31,10 @@ float dragDistance = 0.0f;
 float maxDragDistance = 200.0f;
 int strokes = 0;
 int score = 200;
+const int NUM_OBSTACLES = 24;
+Obstacle obstacles[NUM_OBSTACLES];
+Hole hole;
+bool win = false;
 
 bool blink = false;
 int blinkCounter = 0;
@@ -92,12 +96,8 @@ int main(int argc, char* args[]) {
 
     srand(time(NULL));
 
-    const int NUM_OBSTACLES = 24;
-    Obstacle obstacles[NUM_OBSTACLES];
-
     generateRandomObstacles(obstacles, NUM_OBSTACLES, renderer);
 
-    Hole hole;
     generateRandomHole(hole, renderer);
 
     SDL_Surface* ballSurface = IMG_Load("img_src/ball.png");
@@ -118,7 +118,6 @@ int main(int argc, char* args[]) {
     int logoHeight = 300;
 
     SDL_Event e;
-    bool win = false;
     bool quit = false;
     bool menuDisplayed = true;
 
@@ -204,12 +203,14 @@ int main(int argc, char* args[]) {
                 SDL_RenderFillRect(renderer, &frameRect);
                 SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
                 SDL_RenderDrawRect(renderer, &frameRect);
+                string restartText = "Press R to restart!";
                 string winText = "Congratulations! You Won!";
                 string strokesText = "Your strokes: " + to_string(strokes);
                 string scoreText = "Your score: " + to_string(score);
-                renderText(renderer, winText.c_str(), textColor, WINDOW_WIDTH / 2 - 160, WINDOW_HEIGHT / 2 - 50);
-                renderText(renderer, strokesText.c_str(), textColor, WINDOW_WIDTH / 2 - 90, WINDOW_HEIGHT / 2);
-                renderText(renderer, scoreText.c_str(), textColor, WINDOW_WIDTH / 2 - 90, WINDOW_HEIGHT / 2 + 30);
+                renderText(renderer, winText.c_str(), textColor, WINDOW_WIDTH / 2 - 155, WINDOW_HEIGHT / 2 - 80);
+                renderText(renderer, strokesText.c_str(), textColor, WINDOW_WIDTH / 2 - 95, WINDOW_HEIGHT / 2 - 40);
+                renderText(renderer, scoreText.c_str(), textColor, WINDOW_WIDTH / 2 - 95, WINDOW_HEIGHT / 2 );
+                renderText(renderer, restartText.c_str(), textColor, WINDOW_WIDTH / 2 - 115, WINDOW_HEIGHT / 2 + 40);
             }
         }
         else {

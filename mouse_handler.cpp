@@ -17,5 +17,9 @@ void handleMouseEvents(SDL_Event& e) {
         dragDistance = 0.0f;
         strokes ++;
         if (strokes > 1) score -=5;
-    } 
+    } else if (e.type == SDL_KEYDOWN) {
+        if (e.key.keysym.sym == SDLK_r && win) {
+            resetGame(ball, obstacles, hole, score, strokes, win, renderer);
+        }
+    }
 }
