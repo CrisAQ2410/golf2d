@@ -15,6 +15,7 @@
 #include "hole_random.h"
 #include "check_hole_collision.h"
 #include "render_text.h"
+#include "power_bar.h"
 
 using namespace std;
 
@@ -191,6 +192,9 @@ int main(int argc, char* args[]) {
             }
             SDL_Rect holeRect = { (int)(hole.x - hole.width / 2), (int)(hole.y - hole.height / 2), hole.width, hole.height };
             SDL_RenderCopy(renderer, hole.texture, NULL, &holeRect);
+            if (isDragging) {
+                drawPowerBar(renderer);
+            }
             SDL_Rect dstRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
             SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
             string strokesText = "Strokes: " + to_string(strokes);

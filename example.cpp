@@ -175,6 +175,17 @@ void resetGame(Ball& ball, Obstacle obstacles[], Hole& hole, int& score, int& st
     win = false;
 }
 
+bool isDragging = false;
+int dragStartX, dragStartY;
+float dragDistance = 0.0f;
+int dragEndX, dragEndY;
+
+void drawPowerBar(SDL_Renderer* renderer) {
+    // Vẽ thanh lực
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+    SDL_RenderDrawLine(renderer, dragStartX, dragStartY, dragStartX - (dragEndX - dragStartX), dragStartY - (dragEndY - dragStartY));
+}
+
 int main(int argc, char* args[]) {
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
@@ -269,10 +280,6 @@ int main(int argc, char* args[]) {
 
     SDL_Event e;
     bool isBallReleased = false;
-    bool isDragging = false;
-    int dragStartX, dragStartY;
-    int dragEndX, dragEndY;
-    float dragDistance = 0.0f;
     float maxDragDistance = 200.0f;
 
     int strokes = 0;
@@ -389,6 +396,10 @@ int main(int argc, char* args[]) {
         //Vẽ hố
         SDL_Rect holeRect = { (int)(hole.x - hole.width / 2), (int)(hole.y - hole.height / 2), hole.width, hole.height };
         SDL_RenderCopy(renderer, hole.texture, NULL, &holeRect);
+
+        if (isDragging) {
+            drawPowerBar(renderer);
+        }
 
         // Vẽ quả bóng
         SDL_Rect ballRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
