@@ -19,6 +19,7 @@ extern SDL_Renderer* renderer;
 extern Hole hole;
 extern Obstacle obstacles[];
 extern bool win;
+extern bool menuDisplayed;
 
 void handleMouseEvents(SDL_Event& e);
 

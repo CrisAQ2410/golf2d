@@ -21,5 +21,12 @@ void handleMouseEvents(SDL_Event& e) {
         if (e.key.keysym.sym == SDLK_r && win) {
             resetGame(ball, obstacles, hole, score, strokes, win, renderer);
         }
+    } else if (!menuDisplayed && !win && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
+        int mouseX = e.button.x;
+        int mouseY = e.button.y;
+        if (mouseX >= WINDOW_WIDTH - 60 && mouseX <= WINDOW_WIDTH - 20 &&
+            mouseY >= 10 && mouseY <= 50) {
+            resetGame(ball, obstacles, hole, score, strokes, win, renderer);
+        }
     }
 }

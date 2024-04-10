@@ -14,6 +14,6 @@
 extern int dragStartX, dragStartY;
 extern int dragEndX, dragEndY;
 
-void drawPowerBar(SDL_Renderer* renderer);
+void drawPowerBar(SDL_Renderer* renderer, const Ball& ball);
 
 #endif // POWER_BAR_H

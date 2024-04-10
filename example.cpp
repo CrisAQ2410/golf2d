@@ -180,10 +180,11 @@ int dragStartX, dragStartY;
 float dragDistance = 0.0f;
 int dragEndX, dragEndY;
 
-void drawPowerBar(SDL_Renderer* renderer) {
-    // Vẽ thanh lực
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-    SDL_RenderDrawLine(renderer, dragStartX, dragStartY, dragStartX - (dragEndX - dragStartX), dragStartY - (dragEndY - dragStartY));
+void drawPowerBar(SDL_Renderer* renderer, const Ball& ball) {
+    SDL_Surface* arrowSurface = IMG_Load("img_src/bg.png");
+    SDL_Texture* arrowTexture = SDL_CreateTextureFromSurface(renderer, arrowSurface);
+    SDL_FreeSurface(arrowSurface);
+    SDL_RenderDrawLine(renderer, ball.x, ball.y, dragStartX - (dragEndX - dragStartX), dragStartY - (dragEndY - dragStartY));
 }
 
 int main(int argc, char* args[]) {
@@ -398,7 +399,7 @@ int main(int argc, char* args[]) {
         SDL_RenderCopy(renderer, hole.texture, NULL, &holeRect);
 
         if (isDragging) {
-            drawPowerBar(renderer);
+            drawPowerBar(renderer, ball);
         }
 
         // Vẽ quả bóng

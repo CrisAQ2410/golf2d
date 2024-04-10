@@ -17,9 +17,13 @@
 #include "render_text.h"
 #include "power_bar.h"
 
-using namespace std;
+using namespace std; 
 
 Ball ball;
+Hole hole;
+const int NUM_OBSTACLES = 24;
+Obstacle obstacles[NUM_OBSTACLES];
+
 TTF_Font *font = NULL;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -32,14 +36,16 @@ float dragDistance = 0.0f;
 float maxDragDistance = 200.0f;
 int strokes = 0;
 int score = 200;
-const int NUM_OBSTACLES = 24;
-Obstacle obstacles[NUM_OBSTACLES];
-Hole hole;
 bool win = false;
+int logoWidth = 400;
+int logoHeight = 350;
+SDL_Event e;
+bool quit = false;
+bool menuDisplayed = true;
 
 bool blink = false;
 int blinkCounter = 0;
-const int blinkThreshold = 30; 
+const int blinkThreshold = 30;
 
 int main(int argc, char* args[]) {
 
@@ -71,6 +77,14 @@ int main(int argc, char* args[]) {
     }
     SDL_Texture* logoTexture = SDL_CreateTextureFromSurface(renderer, logoSurface);
     SDL_FreeSurface(logoSurface);
+
+    SDL_Surface* restartSurface = IMG_Load("img_src/restart.png");
+    if (!restartSurface) {
+        printf("Unable to load restart logo image: %s\n", IMG_GetError());
+        return 1;
+    }
+    SDL_Texture* restartTexture = SDL_CreateTextureFromSurface(renderer, restartSurface);
+    SDL_FreeSurface(restartSurface);
 
     if (Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3) {
         printf("Mix_Init: %s\n", Mix_GetError());
@@ -115,13 +129,6 @@ int main(int argc, char* args[]) {
     ball.velY = 0;
     SDL_QueryTexture(ballTexture, NULL, NULL, &ball.width, &ball.height);
 
-    int logoWidth = 350;
-    int logoHeight = 300;
-
-    SDL_Event e;
-    bool quit = false;
-    bool menuDisplayed = true;
-
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
@@ -132,6 +139,14 @@ int main(int argc, char* args[]) {
                 isBallReleased = true;
             }
             handleMouseEvents(e);
+            if (!menuDisplayed && !win && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
+                int mouseX = e.button.x;
+                int mouseY = e.button.y;
+                if (mouseX >= WINDOW_WIDTH - 60 && mouseX <= WINDOW_WIDTH - 20 && mouseY >= 10 && mouseY <= 50) {
+                    resetGame(ball, obstacles, hole, score, strokes, win, renderer);
+                    strokes--;
+                }
+            }
         }
         
         blinkCounter++;
@@ -193,7 +208,7 @@ int main(int argc, char* args[]) {
             SDL_Rect holeRect = { (int)(hole.x - hole.width / 2), (int)(hole.y - hole.height / 2), hole.width, hole.height };
             SDL_RenderCopy(renderer, hole.texture, NULL, &holeRect);
             if (isDragging) {
-                drawPowerBar(renderer);
+                drawPowerBar(renderer, ball);
             }
             SDL_Rect dstRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
             SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
@@ -220,12 +235,17 @@ int main(int argc, char* args[]) {
         else {
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
-            SDL_Rect logoRect = {230, 50, logoWidth, logoHeight};
+            SDL_Rect logoRect = {200, 50, logoWidth, logoHeight};
             SDL_RenderCopy(renderer, logoTexture, NULL, &logoRect);
             
             if (blink) {
                 renderText(renderer, "Left click anywhere to start", textColor, (WINDOW_WIDTH - 350) / 2, (WINDOW_HEIGHT + logoHeight) / 2 + 20);
             }
+        }
+
+        if (!menuDisplayed && !win) {
+            SDL_Rect restartRect = { WINDOW_WIDTH - 60, 10, 40, 40 };
+            SDL_RenderCopy(renderer, restartTexture, NULL, &restartRect);
         }
 
         SDL_RenderPresent(renderer);
@@ -235,6 +255,7 @@ int main(int argc, char* args[]) {
     SDL_DestroyTexture(logoTexture);
     SDL_DestroyTexture(ballTexture);
     SDL_DestroyTexture(backgroundTexture);
+    SDL_DestroyTexture(restartTexture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();
