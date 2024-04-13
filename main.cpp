@@ -17,6 +17,8 @@
 #include "render_text.h"
 #include "power_bar.h"
 #include "resources.h"
+#include "ball_movement.h"
+#include "event_handler.h"
 
 using namespace std; 
 
@@ -78,31 +80,7 @@ int main(int argc, char* args[]) {
     SDL_QueryTexture(ballTexture, NULL, NULL, &ball.width, &ball.height);
 
     while (!quit) {
-        while (SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) {
-                quit = true;
-            }
-            if (menuDisplayed && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
-                menuDisplayed = false;
-                isBallReleased = true;
-            }
-            handleMouseEvents(e);
-            if (!menuDisplayed && !win && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
-                int mouseX = e.button.x;
-                int mouseY = e.button.y;
-                if (mouseX >= WINDOW_WIDTH - 110 && mouseX <= WINDOW_WIDTH - 10 && mouseY >= 10 && mouseY <= 50) {
-                    resetGame(ball, obstacles, hole, score, strokes, win, renderer);
-                    strokes--;
-                }
-            }
-            if (!menuDisplayed && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
-                int mouseX = e.button.x;
-                int mouseY = e.button.y;
-                if (mouseX >= WINDOW_WIDTH - 50 && mouseX <= WINDOW_WIDTH - 10 && mouseY >= 10 && mouseY <= 50) {
-                    quit = true;
-                }
-            }
-        }
+        handleEvents(e, quit, menuDisplayed, isBallReleased, ball, obstacles, hole, strokes, score, win, renderer);
         
         blinkCounter++;
 
@@ -113,45 +91,7 @@ int main(int argc, char* args[]) {
 
         if (!menuDisplayed) {
             if (isBallReleased) {
-                ball.x += ball.velX;
-                ball.y += ball.velY;
-                if (ball.x - ball.width / 2 < 0 || ball.x + ball.width / 2 > WINDOW_WIDTH) {
-                    ball.velX = -ball.velX;
-                    Mix_PlayChannel(-1, collisionSound, 0);
-                }
-                if (ball.y - ball.height / 2 < 0 || ball.y + ball.height / 2 > WINDOW_HEIGHT) {
-                    ball.velY = -ball.velY; 
-                    Mix_PlayChannel(-1, collisionSound, 0);
-                }
-                if (fabs(ball.velX) < 0.1 && fabs(ball.velY) < 0.1) {
-                    isBallReleased = false;
-                }
-                for (int i = 0; i < NUM_OBSTACLES; ++i) {
-                    if (checkCollision(ball, obstacles[i])) {
-                        Mix_PlayChannel(-1, collisionSound, 0);
-                        handleCollision(ball, obstacles[i]);
-                    }
-                }
-                if (checkHoleCollision(ball, hole)) {
-                    Mix_PlayChannel(-1, holeSound, 0);
-                    float distanceToHole = sqrt((ball.x - hole.x) * (ball.x - hole.x) + (ball.y - hole.y) * (ball.y - hole.y));
-                    float angleToHole = atan2(hole.y - ball.y, hole.x - ball.x);
-
-                    float speed = 5.0f;
-                    ball.velX = speed * cos(angleToHole);
-                    ball.velY = speed * sin(angleToHole);
-
-                    ball.x += ball.velX;
-                    ball.y += ball.velY;
-
-                    if (distanceToHole < 10.0f) { 
-                        ball.velX = 0;
-                        ball.velY = 0;
-                        win = true;
-                    }
-                }
-                ball.velX *= FRICTION;
-                ball.velY *= FRICTION;
+                updateBallMovement(ball, obstacles, NUM_OBSTACLES, hole, collisionSound, holeSound, FRICTION, win);
             }
             
             SDL_RenderClear(renderer);
