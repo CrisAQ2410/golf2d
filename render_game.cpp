@@ -1,10 +1,6 @@
 #include "render_game.h"
 
-void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles[], int NUM_OBSTACLES, bool isDragging, bool win, int strokes, int score, bool menuDisplayed, bool blink, int logoWidth, int logoHeight) {
-    if (isBallReleased) {
-        updateBallMovement(ball, obstacles, NUM_OBSTACLES, hole, collisionSound, holeSound, FRICTION, win);
-    }
-            
+void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles[], int NUM_OBSTACLES, bool isDragging, bool win, int strokes, int score, bool menuDisplayed, bool blink, int logoWidth, int logoHeight) {        
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
     for (int i = 0; i < NUM_OBSTACLES; ++i) {
@@ -20,6 +16,8 @@ void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles
     SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
     string strokesText = "Strokes: " + to_string(strokes);
     string scoreText = "Score: " + to_string(score);
+    string timeText = "Time: " + to_string(60 - elapsedTime);
+    renderText(renderer, timeText.c_str(), textColor, 10, 10);
     renderText(renderer, strokesText.c_str(), textColor, 350, 1);
     renderText(renderer, scoreText.c_str(), textColor, 350, 565);
     if (win) {

@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <chrono>
 #include "golf_game.h"
 #include "mouse_handler.h"
 #include "obstacles_random.h"
@@ -24,8 +25,12 @@
 #include "event_handler.h"
 
 using namespace std;
+using namespace std::chrono;
 
 extern SDL_Color textColor;
+extern steady_clock::time_point startTime;
+extern steady_clock::time_point currentTime;
+extern long long elapsedTime;
 
 void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles[], int NUM_OBSTACLES, bool isDragging, bool win, int strokes, int score, bool menuDisplayed, bool blink, int logoWidth, int logoHeight);
 
