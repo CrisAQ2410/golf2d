@@ -19,6 +19,8 @@
 #include "resources.h"
 #include "ball_movement.h"
 #include "event_handler.h"
+#include "render_game.h"
+#include "render_menu.h"
 
 using namespace std; 
 
@@ -93,50 +95,10 @@ int main(int argc, char* args[]) {
             if (isBallReleased) {
                 updateBallMovement(ball, obstacles, NUM_OBSTACLES, hole, collisionSound, holeSound, FRICTION, win);
             }
-            
-            SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
-            for (int i = 0; i < NUM_OBSTACLES; ++i) {
-                SDL_Rect obstacleRect = { (int)(obstacles[i].x - obstacles[i].width / 2), (int)(obstacles[i].y - obstacles[i].height / 2), obstacles[i].width, obstacles[i].height };
-                SDL_RenderCopy(renderer, obstacles[i].texture, NULL, &obstacleRect);
-            }
-            SDL_Rect holeRect = { (int)(hole.x - hole.width / 2), (int)(hole.y - hole.height / 2), hole.width, hole.height };
-            SDL_RenderCopy(renderer, hole.texture, NULL, &holeRect);
-            if (isDragging) {
-                drawPowerBar(renderer, ball);
-            }
-            SDL_Rect dstRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
-            SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
-            string strokesText = "Strokes: " + to_string(strokes);
-            string scoreText = "Score: " + to_string(score);
-            renderText(renderer, strokesText.c_str(), textColor, 350, 1);
-            renderText(renderer, scoreText.c_str(), textColor, 350, 565);
-            if (win) {
-                SDL_Rect frameRect = { WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 };
-                SDL_SetRenderDrawColor(renderer, 0, 128, 0, 200);
-                SDL_RenderFillRect(renderer, &frameRect);
-                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-                SDL_RenderDrawRect(renderer, &frameRect);
-                string restartText = "Press R to restart!";
-                string winText = "Congratulations! You Won!";
-                string strokesText = "Your strokes: " + to_string(strokes);
-                string scoreText = "Your score: " + to_string(score);
-                renderText(renderer, winText.c_str(), textColor, WINDOW_WIDTH / 2 - 155, WINDOW_HEIGHT / 2 - 80);
-                renderText(renderer, strokesText.c_str(), textColor, WINDOW_WIDTH / 2 - 95, WINDOW_HEIGHT / 2 - 40);
-                renderText(renderer, scoreText.c_str(), textColor, WINDOW_WIDTH / 2 - 95, WINDOW_HEIGHT / 2 );
-                renderText(renderer, restartText.c_str(), textColor, WINDOW_WIDTH / 2 - 115, WINDOW_HEIGHT / 2 + 40);
-            }
+            renderGame(renderer, ball, hole, obstacles, NUM_OBSTACLES, isDragging, win, strokes, score, menuDisplayed, blink, logoWidth, logoHeight);
         }
         else {
-            SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
-            SDL_Rect logoRect = {200, 50, logoWidth, logoHeight};
-            SDL_RenderCopy(renderer, logoTexture, NULL, &logoRect);
-            SDL_Rect exitRect = { WINDOW_WIDTH - 50, 10, 40, 40 };
-            SDL_RenderCopy(renderer, exitTexture, NULL, &exitRect);
-            if (blink) {
-                renderText(renderer, "Left click anywhere to start", textColor, (WINDOW_WIDTH - 350) / 2, (WINDOW_HEIGHT + logoHeight) / 2 + 20);
-            }
+            renderMenu(renderer, ball, hole, obstacles, NUM_OBSTACLES, isDragging, win, strokes, score, menuDisplayed, blink, logoWidth, logoHeight);
         }
 
         if (!menuDisplayed && !win) {
