@@ -16,8 +16,6 @@ void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles
     SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
     string strokesText = "Strokes: " + to_string(strokes);
     string scoreText = "Score: " + to_string(score);
-    string timeText = "Time: " + to_string(60 - elapsedTime);
-    renderText(renderer, timeText.c_str(), textColor, 10, 10);
     renderText(renderer, strokesText.c_str(), textColor, 350, 1);
     renderText(renderer, scoreText.c_str(), textColor, 350, 565);
     if (win) {

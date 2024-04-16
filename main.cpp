@@ -54,10 +54,6 @@ bool blink = false;
 int blinkCounter = 0;
 const int blinkThreshold = 30;
 
-steady_clock::time_point startTime;
-steady_clock::time_point currentTime;
-long long elapsedTime;
-
 int main(int argc, char* args[]) {
 
     SDL_Init(SDL_INIT_VIDEO);
@@ -87,16 +83,7 @@ int main(int argc, char* args[]) {
     ball.velY = 0;
     SDL_QueryTexture(ballTexture, NULL, NULL, &ball.width, &ball.height);
 
-    auto startTime = steady_clock::now();
-
     while (!quit) {
-
-        auto currentTime = steady_clock::now();
-        auto elapsedTime = duration_cast<seconds>(currentTime - startTime).count();
-        
-        if (elapsedTime >= 60) {
-            quit = true;
-        }
 
         handleEvents(e, quit, menuDisplayed, isBallReleased, ball, obstacles, hole, strokes, score, win, renderer);
         
