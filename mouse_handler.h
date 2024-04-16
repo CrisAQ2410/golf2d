@@ -5,6 +5,7 @@
 #include <cmath>
 #include "golf_game.h"
 #include "restart.h"
+#include "time.h"
 
 extern bool isBallReleased;
 extern bool isDragging;

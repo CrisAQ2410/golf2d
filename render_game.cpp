@@ -18,7 +18,10 @@ void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles
     string scoreText = "Score: " + to_string(score);
     renderText(renderer, strokesText.c_str(), textColor, 350, 1);
     renderText(renderer, scoreText.c_str(), textColor, 350, 565);
-    if (win) {
+    int remainingTime = calculateRemainingTime(startTime);
+    string timeText = "Time: " + to_string(remainingTime) + "s";
+    renderText(renderer, timeText.c_str(), textColor, 10, 1);
+    if (remainingTime == 0) {
         SDL_Rect frameRect = { WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 };
         SDL_SetRenderDrawColor(renderer, 0, 128, 0, 200);
         SDL_RenderFillRect(renderer, &frameRect);

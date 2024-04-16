@@ -10,6 +10,7 @@ void handleEvents(SDL_Event &e, bool &quit, bool &menuDisplayed, bool &isBallRel
         if (menuDisplayed && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
             menuDisplayed = false;
             isBallReleased = true;
+            startTime = high_resolution_clock::now();
         }
         handleMouseEvents(e);
         if (!menuDisplayed && !win && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {

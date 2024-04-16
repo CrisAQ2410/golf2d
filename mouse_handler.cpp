@@ -18,8 +18,12 @@ void handleMouseEvents(SDL_Event& e) {
         strokes ++;
         if (strokes > 1) score -=5;
     } else if (e.type == SDL_KEYDOWN) {
-        if (e.key.keysym.sym == SDLK_r && win) {
+        int remainingTime = calculateRemainingTime(startTime);
+        if (e.key.keysym.sym == SDLK_r && remainingTime == 0) {
             resetGame(ball, obstacles, hole, score, strokes, win, renderer);
+            startTime = high_resolution_clock::now();
         }
+    } else if (win) {
+        resetGame(ball, obstacles, hole, score, strokes, win, renderer);
     }
 }

@@ -22,9 +22,15 @@
 #include "event_handler.h"
 #include "render_game.h"
 #include "render_menu.h"
+#include "time.h"
 
 using namespace std; 
 using namespace std::chrono;
+
+high_resolution_clock::time_point startTime = high_resolution_clock::now();
+high_resolution_clock::time_point currentTime = high_resolution_clock::now();
+duration<double> elapsedTime = duration_cast<seconds>(currentTime - startTime);
+int remainingTime = GAME_DURATION - static_cast<int>(elapsedTime.count());
 
 Ball ball;
 Hole hole;

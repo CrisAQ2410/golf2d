@@ -7,6 +7,7 @@ void resetGame(Ball& ball, Obstacle obstacles[], Hole& hole, int& score, int& st
     ball.velY = 0;
 
     const int NUM_OBSTACLES = 24;
+    const int GAME_DURATION = 30;
 
     generateRandomObstacles(obstacles, NUM_OBSTACLES, renderer);
     generateRandomHole(hole, renderer);
@@ -14,4 +15,5 @@ void resetGame(Ball& ball, Obstacle obstacles[], Hole& hole, int& score, int& st
     score = 200;
     strokes = 0;
     win = false;
+
 }
