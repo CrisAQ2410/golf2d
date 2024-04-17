@@ -2,15 +2,15 @@
 
 bool checkCollision(const Ball& ball, const Obstacle& obstacle) {
     
-    int ballLeft = ball.x - ball.width / 2;
-    int ballRight = ball.x + ball.width / 2;
-    int ballTop = ball.y - ball.height / 2;
-    int ballBottom = ball.y + ball.height / 2;
+    float ballLeft = ball.x - ball.width / 2;
+    float ballRight = ball.x + ball.width / 2;
+    float ballTop = ball.y - ball.height / 2;
+    float ballBottom = ball.y + ball.height / 2;
 
-    int obstacleLeft = obstacle.x - obstacle.width / 2;
-    int obstacleRight = obstacle.x + obstacle.width / 2;
-    int obstacleTop = obstacle.y - obstacle.height / 2;
-    int obstacleBottom = obstacle.y + obstacle.height / 2;
+    float obstacleLeft = obstacle.x - obstacle.width / 2;
+    float obstacleRight = obstacle.x + obstacle.width / 2;
+    float obstacleTop = obstacle.y - obstacle.height / 2;
+    float obstacleBottom = obstacle.y + obstacle.height / 2;
 
     if (ballRight >= obstacleLeft && ballLeft <= obstacleRight &&
         ballBottom >= obstacleTop && ballTop <= obstacleBottom) {

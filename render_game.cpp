@@ -15,7 +15,7 @@ void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles
     SDL_Rect dstRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
     SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
     string highestText = "Highest Score: " + to_string(highestScore);
-    renderText(renderer, highestText.c_str(), textColor, 315, 1);
+    renderText(renderer, highestText.c_str(), textColor, 300, 1);
     string scoreText = "Score: " + to_string(score);
     renderText(renderer, scoreText.c_str(), textColor, 350, 565);
     int remainingTime1 = calculateRemainingTime(startTime);
