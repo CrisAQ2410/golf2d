@@ -1,6 +1,6 @@
 #include "restart.h"
 
-void resetGame(Ball& ball, Obstacle obstacles[], Hole& hole, int& score, int& strokes, bool& win, SDL_Renderer* renderer) {
+void resetGame(Ball& ball, Obstacle obstacles[], Hole& hole, int& score, int &strokes, int &highestScore, bool& win, SDL_Renderer* renderer) {
     ball.x = rand() % WINDOW_WIDTH;
     ball.y = rand() % WINDOW_HEIGHT; 
     ball.velX = 0; 

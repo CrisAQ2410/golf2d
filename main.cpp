@@ -31,6 +31,7 @@ high_resolution_clock::time_point startTime = high_resolution_clock::now();
 high_resolution_clock::time_point currentTime = high_resolution_clock::now();
 duration<double> elapsedTime = duration_cast<seconds>(currentTime - startTime);
 int remainingTime = GAME_DURATION - static_cast<int>(elapsedTime.count());
+int remainingTime1;
 
 Ball ball;
 Hole hole;
@@ -47,6 +48,7 @@ int dragStartX, dragStartY;
 int dragEndX, dragEndY;
 float dragDistance = 0.0f;
 float maxDragDistance = 200.0f;
+int highestScore = 0;
 int strokes = 0;
 int score = 200;
 bool win = false;
@@ -104,10 +106,10 @@ int main(int argc, char* args[]) {
             if (isBallReleased) {
                 updateBallMovement(ball, obstacles, NUM_OBSTACLES, hole, collisionSound, holeSound, FRICTION, win);
             }
-            renderGame(renderer, ball, hole, obstacles, NUM_OBSTACLES, isDragging, win, strokes, score, menuDisplayed, blink, logoWidth, logoHeight);
+            renderGame(renderer, ball, hole, obstacles, NUM_OBSTACLES, isDragging, win, highestScore, score, menuDisplayed, blink, logoWidth, logoHeight);
         }
         else {
-            renderMenu(renderer, ball, hole, obstacles, NUM_OBSTACLES, isDragging, win, strokes, score, menuDisplayed, blink, logoWidth, logoHeight);
+            renderMenu(renderer, ball, hole, obstacles, NUM_OBSTACLES, isDragging, win, highestScore, score, menuDisplayed, blink, logoWidth, logoHeight);
         }
 
         if (!menuDisplayed && !win) {

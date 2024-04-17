@@ -1,6 +1,6 @@
 #include "render_game.h"
 
-void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles[], int NUM_OBSTACLES, bool isDragging, bool win, int strokes, int score, bool menuDisplayed, bool blink, int logoWidth, int logoHeight) {        
+void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles[], int NUM_OBSTACLES, bool isDragging, bool win, int highestScore, int score, bool menuDisplayed, bool blink, int logoWidth, int logoHeight) {        
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
     for (int i = 0; i < NUM_OBSTACLES; ++i) {
@@ -14,26 +14,26 @@ void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles
     }
     SDL_Rect dstRect = { (int)(ball.x - ball.width / 2), (int)(ball.y - ball.height / 2), ball.width, ball.height };
     SDL_RenderCopy(renderer, ballTexture, NULL, &dstRect);
-    string strokesText = "Strokes: " + to_string(strokes);
+    string highestText = "Highest Score: " + to_string(highestScore);
+    renderText(renderer, highestText.c_str(), textColor, 315, 1);
     string scoreText = "Score: " + to_string(score);
-    renderText(renderer, strokesText.c_str(), textColor, 350, 1);
     renderText(renderer, scoreText.c_str(), textColor, 350, 565);
-    int remainingTime = calculateRemainingTime(startTime);
-    string timeText = "Time: " + to_string(remainingTime) + "s";
+    int remainingTime1 = calculateRemainingTime(startTime);
+    string timeText = "Time: " + to_string(remainingTime1) + "s";
     renderText(renderer, timeText.c_str(), textColor, 10, 1);
-    if (remainingTime == 0) {
+    if (remainingTime1 == 0) {
         SDL_Rect frameRect = { WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 };
         SDL_SetRenderDrawColor(renderer, 0, 128, 0, 200);
         SDL_RenderFillRect(renderer, &frameRect);
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderDrawRect(renderer, &frameRect);
         string restartText = "Press R to restart!";
-        string winText = "Congratulations! You Won!";
-        string strokesText = "Your strokes: " + to_string(strokes);
-        string scoreText = "Your score: " + to_string(score);
-        renderText(renderer, winText.c_str(), textColor, WINDOW_WIDTH / 2 - 155, WINDOW_HEIGHT / 2 - 80);
-        renderText(renderer, strokesText.c_str(), textColor, WINDOW_WIDTH / 2 - 95, WINDOW_HEIGHT / 2 - 40);
-        renderText(renderer, scoreText.c_str(), textColor, WINDOW_WIDTH / 2 - 95, WINDOW_HEIGHT / 2 );
+        string winText = "Game Over!";
+        string highestText = "Highest Score: " + to_string(highestScore);
+        string luckText = "Better luck next time!";
+        renderText(renderer, winText.c_str(), textColor, WINDOW_WIDTH / 2 - 70, WINDOW_HEIGHT / 2 - 80);
+        renderText(renderer, highestText.c_str(), textColor, WINDOW_WIDTH / 2 - 108, WINDOW_HEIGHT / 2);
+        renderText(renderer, luckText.c_str(), textColor, WINDOW_WIDTH / 2 - 130, WINDOW_HEIGHT / 2 - 40);
         renderText(renderer, restartText.c_str(), textColor, WINDOW_WIDTH / 2 - 115, WINDOW_HEIGHT / 2 + 40);
     }
 }

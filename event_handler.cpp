@@ -17,8 +17,8 @@ void handleEvents(SDL_Event &e, bool &quit, bool &menuDisplayed, bool &isBallRel
             int mouseX = e.button.x;
             int mouseY = e.button.y;
             if (mouseX >= WINDOW_WIDTH - 110 && mouseX <= WINDOW_WIDTH - 20 && mouseY >= 10 && mouseY <= 50) {
-                resetGame(ball, obstacles, hole, score, strokes, win, renderer);
-                strokes--;
+                resetGame(ball, obstacles, hole, score, strokes, highestScore, win, renderer);
+                strokes --;
             }
         }
         if (!menuDisplayed && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {

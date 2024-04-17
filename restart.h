@@ -13,6 +13,6 @@
 #include "obstacles_random.h"
 #include "time.h"
 
-void resetGame(Ball& ball, Obstacle obstacles[], Hole& hole, int& score, int& strokes, bool& win, SDL_Renderer* renderer);
+void resetGame(Ball& ball, Obstacle obstacles[], Hole& hole, int& score, int &strokes, int &highestScore, bool& win, SDL_Renderer* renderer);
 
 #endif // RESTART_H

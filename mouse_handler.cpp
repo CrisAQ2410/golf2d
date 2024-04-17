@@ -1,5 +1,7 @@
 #include "mouse_handler.h"
 
+int previousHighestScore = 0;
+
 void handleMouseEvents(SDL_Event& e) {
     if (e.type == SDL_MOUSEBUTTONDOWN && !isDragging && !isBallReleased) {
         isDragging = true;
@@ -20,10 +22,15 @@ void handleMouseEvents(SDL_Event& e) {
     } else if (e.type == SDL_KEYDOWN) {
         int remainingTime = calculateRemainingTime(startTime);
         if (e.key.keysym.sym == SDLK_r && remainingTime == 0) {
-            resetGame(ball, obstacles, hole, score, strokes, win, renderer);
+            resetGame(ball, obstacles, hole, score, strokes, highestScore, win, renderer);
             startTime = high_resolution_clock::now();
+            highestScore = 0;
         }
     } else if (win) {
-        resetGame(ball, obstacles, hole, score, strokes, win, renderer);
+        int remainingTime = calculateRemainingTime(startTime);
+        previousHighestScore = score;
+        resetGame(ball, obstacles, hole, score, strokes, highestScore, win, renderer);
+        highestScore += previousHighestScore;
+        remainingTime += 5;
     }
 }
