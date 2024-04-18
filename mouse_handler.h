@@ -21,8 +21,8 @@ extern SDL_Renderer* renderer;
 extern Hole hole;
 extern Obstacle obstacles[];
 extern bool win;
-extern int remainingTime1;
 
+extern int remainingTime1;
 void handleMouseEvents(SDL_Event& e);
 
 #endif // MOUSE_HANDLE_H

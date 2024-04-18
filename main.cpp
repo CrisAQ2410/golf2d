@@ -28,7 +28,7 @@ using namespace std;
 using namespace std::chrono;
 
 high_resolution_clock::time_point startTime = high_resolution_clock::now();
-int remainingTime1 = calculateRemainingTime(startTime);
+int remainingTime1 = calculateRemainingTime();
 
 Ball ball;
 Hole hole;
@@ -90,7 +90,7 @@ int main(int argc, char* args[]) {
 
     while (!quit) {
 
-        handleEvents(e, quit, menuDisplayed, isBallReleased, ball, obstacles, hole, strokes, score, win, renderer);
+        handleEvents(e, quit, menuDisplayed, isBallReleased, ball, obstacles, hole, strokes, highestScore, score, win, renderer);
         
         blinkCounter++;
 
@@ -103,7 +103,7 @@ int main(int argc, char* args[]) {
             if (isBallReleased) {
                 updateBallMovement(ball, obstacles, NUM_OBSTACLES, hole, collisionSound, holeSound, FRICTION, win);
             }
-            renderGame(renderer, ball, hole, obstacles, NUM_OBSTACLES, isDragging, win, highestScore, score, menuDisplayed, blink, logoWidth, logoHeight);
+            renderGame(renderer, ball, hole, obstacles, NUM_OBSTACLES, isDragging, win, highestScore, score, menuDisplayed, blink, logoWidth, logoHeight, remainingTime1);
         }
         else {
             renderMenu(renderer, ball, hole, obstacles, NUM_OBSTACLES, isDragging, win, highestScore, score, menuDisplayed, blink, logoWidth, logoHeight);

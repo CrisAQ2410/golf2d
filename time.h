@@ -16,6 +16,6 @@ using namespace std::chrono;
 extern high_resolution_clock::time_point startTime;
 const int GAME_DURATION = 30;
 
-int calculateRemainingTime(high_resolution_clock::time_point startTime);
+int calculateRemainingTime();
 
 #endif // TIME_H

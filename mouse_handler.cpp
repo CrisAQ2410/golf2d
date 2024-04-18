@@ -20,17 +20,14 @@ void handleMouseEvents(SDL_Event& e) {
         strokes ++;
         if (strokes > 1) score -=5;
     } else if (e.type == SDL_KEYDOWN) {
-        int remainingTime = calculateRemainingTime(startTime);
-        if (e.key.keysym.sym == SDLK_r && remainingTime == 0) {
+        if (e.key.keysym.sym == SDLK_r && remainingTime1 == 0) {
             resetGame(ball, obstacles, hole, score, strokes, highestScore, win, renderer);
             startTime = high_resolution_clock::now();
             highestScore = 0;
         }
     } else if (win) {
-        int remainingTime = calculateRemainingTime(startTime);
         previousHighestScore = score;
         resetGame(ball, obstacles, hole, score, strokes, highestScore, win, renderer);
         highestScore += previousHighestScore;
-        remainingTime += 5;
     }
 }

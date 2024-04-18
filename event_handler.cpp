@@ -2,7 +2,7 @@
 #include "mouse_handler.h"
 #include "restart.h"
 
-void handleEvents(SDL_Event &e, bool &quit, bool &menuDisplayed, bool &isBallReleased, Ball &ball, Obstacle obstacles[], Hole &hole, int &strokes, int &score, bool &win, SDL_Renderer* renderer) {
+void handleEvents(SDL_Event &e, bool &quit, bool &menuDisplayed, bool &isBallReleased, Ball &ball, Obstacle obstacles[], Hole &hole, int &strokes, int &highestScore, int &score, bool &win, SDL_Renderer* renderer) {
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
             quit = true;
@@ -19,6 +19,7 @@ void handleEvents(SDL_Event &e, bool &quit, bool &menuDisplayed, bool &isBallRel
             if (mouseX >= WINDOW_WIDTH - 110 && mouseX <= WINDOW_WIDTH - 20 && mouseY >= 10 && mouseY <= 50) {
                 resetGame(ball, obstacles, hole, score, strokes, highestScore, win, renderer);
                 strokes --;
+                highestScore -= 50;
             }
         }
         if (!menuDisplayed && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {

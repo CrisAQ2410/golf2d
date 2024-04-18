@@ -31,6 +31,6 @@ using namespace std;
 extern high_resolution_clock::time_point startTime;
 extern SDL_Color textColor;
 
-void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles[], int NUM_OBSTACLES, bool isDragging, bool win, int highestScore, int score, bool menuDisplayed, bool blink, int logoWidth, int logoHeight);
+void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles[], int NUM_OBSTACLES, bool isDragging, bool win, int highestScore, int score, bool menuDisplayed, bool blink, int logoWidth, int logoHeight, int& remainingTime1);
 
 #endif // RENDER_H

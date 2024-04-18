@@ -1,6 +1,6 @@
 #include "render_game.h"
 
-void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles[], int NUM_OBSTACLES, bool isDragging, bool win, int highestScore, int score, bool menuDisplayed, bool blink, int logoWidth, int logoHeight) {        
+void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles[], int NUM_OBSTACLES, bool isDragging, bool win, int highestScore, int score, bool menuDisplayed, bool blink, int logoWidth, int logoHeight, int& remainingTime1) {        
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
     for (int i = 0; i < NUM_OBSTACLES; ++i) {
@@ -18,7 +18,7 @@ void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles
     renderText(renderer, highestText.c_str(), textColor, 300, 1);
     string scoreText = "Score: " + to_string(score);
     renderText(renderer, scoreText.c_str(), textColor, 350, 565);
-    int remainingTime1 = calculateRemainingTime(startTime);
+    remainingTime1 = calculateRemainingTime();
     string timeText = "Time: " + to_string(remainingTime1) + "s";
     renderText(renderer, timeText.c_str(), textColor, 10, 1);
     if (remainingTime1 == 0) {
