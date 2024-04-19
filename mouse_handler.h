@@ -6,6 +6,9 @@
 #include "golf_game.h"
 #include "restart.h"
 #include "time.h"
+#include <chrono>
+
+using namespace std::chrono;
 
 extern bool isBallReleased;
 extern bool isDragging;
@@ -21,8 +24,11 @@ extern SDL_Renderer* renderer;
 extern Hole hole;
 extern Obstacle obstacles[];
 extern bool win;
-
 extern int remainingTime1;
+extern high_resolution_clock::time_point startTime;
+extern duration<double> extraTimeToAdd;
+extern bool extraTimeAdded;
+
 void handleMouseEvents(SDL_Event& e);
 
 #endif // MOUSE_HANDLE_H

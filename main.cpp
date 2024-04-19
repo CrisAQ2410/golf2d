@@ -27,7 +27,6 @@
 using namespace std; 
 using namespace std::chrono;
 
-high_resolution_clock::time_point startTime = high_resolution_clock::now();
 int remainingTime1 = calculateRemainingTime();
 
 Ball ball;

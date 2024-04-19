@@ -24,6 +24,8 @@ void handleMouseEvents(SDL_Event& e) {
             resetGame(ball, obstacles, hole, score, strokes, highestScore, win, renderer);
             startTime = high_resolution_clock::now();
             highestScore = 0;
+            extraTimeToAdd = duration<double>(0); // Đặt lại thời gian bổ sung về 0
+            extraTimeAdded = false;
         }
     } else if (win) {
         previousHighestScore = score;
