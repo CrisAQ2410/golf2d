@@ -19,7 +19,7 @@ void handleEvents(SDL_Event &e, bool &quit, bool &menuDisplayed, bool &isBallRel
             if (mouseX >= WINDOW_WIDTH - 110 && mouseX <= WINDOW_WIDTH - 20 && mouseY >= 10 && mouseY <= 50) {
                 resetGame(ball, obstacles, hole, score, strokes, highestScore, win, renderer);
                 strokes --;
-                highestScore -= 50;
+                if (highestScore > 0) highestScore -= 100;
             }
         }
         if (!menuDisplayed && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {

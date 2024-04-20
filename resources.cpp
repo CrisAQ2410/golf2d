@@ -4,10 +4,11 @@ SDL_Texture* backgroundTexture = nullptr;
 SDL_Texture* logoTexture = nullptr;
 SDL_Texture* restartTexture = nullptr;
 SDL_Texture* exitTexture = nullptr;
-Mix_Chunk* holeSound = nullptr;
 SDL_Texture* ballTexture = nullptr;
+Mix_Chunk* holeSound = nullptr;
 Mix_Chunk* collisionSound = nullptr;
 Mix_Chunk* chargeSound = nullptr;
+
 
 void loadResources(SDL_Renderer* renderer) {
     SDL_Surface* backgroundSurface = IMG_Load("img_src/bg.png");

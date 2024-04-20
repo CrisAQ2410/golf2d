@@ -113,7 +113,6 @@ int main(int argc, char* args[]) {
             SDL_RenderCopy(renderer, restartTexture, NULL, &restartRect);
             SDL_Rect exitRect = { WINDOW_WIDTH - 50, 10, 40, 40 };
             SDL_RenderCopy(renderer, exitTexture, NULL, &exitRect);
-        
         }
 
         SDL_RenderPresent(renderer);
