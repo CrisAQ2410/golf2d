@@ -8,7 +8,7 @@ SDL_Texture* ballTexture = nullptr;
 Mix_Chunk* holeSound = nullptr;
 Mix_Chunk* collisionSound = nullptr;
 Mix_Chunk* chargeSound = nullptr;
-
+Mix_Music* bgSound = nullptr;
 
 void loadResources(SDL_Renderer* renderer) {
     SDL_Surface* backgroundSurface = IMG_Load("img_src/bg.png");
@@ -73,4 +73,10 @@ void loadResources(SDL_Renderer* renderer) {
     if (!chargeSound) {
         printf("Mix_LoadWAV: %s\n", Mix_GetError());
     }
+
+    bgSound = Mix_LoadMUS("sound/bg.mp3");
+    if (!bgSound) {
+        printf("Mix_LoadMUS: %s\n", Mix_GetError());
+    }
+    Mix_VolumeMusic(MIX_MAX_VOLUME/5);
 }

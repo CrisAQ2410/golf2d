@@ -33,7 +33,6 @@ Ball ball;
 Hole hole;
 const int NUM_OBSTACLES = 24;
 Obstacle obstacles[NUM_OBSTACLES];
-
 TTF_Font *font = NULL;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -53,7 +52,6 @@ int logoHeight = 350;
 SDL_Event e;
 bool quit = false;
 bool menuDisplayed = true;
-
 bool blink = false;
 int blinkCounter = 0;
 const int blinkThreshold = 30;
@@ -86,6 +84,8 @@ int main(int argc, char* args[]) {
     ball.velX = 0;
     ball.velY = 0;
     SDL_QueryTexture(ballTexture, NULL, NULL, &ball.width, &ball.height);
+
+    Mix_PlayMusic(bgSound, -1);
 
     while (!quit) {
 

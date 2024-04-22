@@ -14,6 +14,7 @@ extern SDL_Texture* ballTexture;
 extern Mix_Chunk* holeSound;
 extern Mix_Chunk* collisionSound;
 extern Mix_Chunk* chargeSound;
+extern Mix_Music* bgSound;
 
 void loadResources(SDL_Renderer* renderer);
 
