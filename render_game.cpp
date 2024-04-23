@@ -31,9 +31,11 @@ void renderGame(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles
         string winText = "Game Over!";
         string highestText = "Highest Score: " + to_string(highestScore);
         string luckText = "Better luck next time!";
-        renderText(renderer, winText.c_str(), textColor, WINDOW_WIDTH / 2 - 70, WINDOW_HEIGHT / 2 - 80);
-        renderText(renderer, highestText.c_str(), textColor, WINDOW_WIDTH / 2 - 108, WINDOW_HEIGHT / 2);
-        renderText(renderer, luckText.c_str(), textColor, WINDOW_WIDTH / 2 - 130, WINDOW_HEIGHT / 2 - 40);
-        renderText(renderer, restartText.c_str(), textColor, WINDOW_WIDTH / 2 - 115, WINDOW_HEIGHT / 2 + 40);
+        string menuText = "Press H to return to the menu";
+        renderText(renderer, winText.c_str(), textColor, WINDOW_WIDTH / 2 - 70, WINDOW_HEIGHT / 2 - 100);
+        renderText(renderer, luckText.c_str(), textColor, WINDOW_WIDTH / 2 - 130, WINDOW_HEIGHT / 2 - 60);
+        renderText(renderer, highestText.c_str(), textColor, WINDOW_WIDTH / 2 - 108, WINDOW_HEIGHT / 2 - 20);
+        renderText(renderer, restartText.c_str(), textColor, WINDOW_WIDTH / 2 - 115, WINDOW_HEIGHT / 2 + 20);
+        renderText(renderer, menuText.c_str(), textColor, WINDOW_WIDTH / 2 - 195, WINDOW_HEIGHT / 2 + 60);
     }
 }

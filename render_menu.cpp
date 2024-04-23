@@ -9,5 +9,5 @@ void renderMenu(SDL_Renderer* renderer, Ball ball, Hole hole, Obstacle obstacles
     SDL_RenderCopy(renderer, exitTexture, NULL, &exitRect);
     if (blink) {
         renderText(renderer, "Left click anywhere to start", textColor, (WINDOW_WIDTH - 350) / 2, (WINDOW_HEIGHT + logoHeight) / 2 + 20);
-    }
+    } 
 }

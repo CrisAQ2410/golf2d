@@ -11,6 +11,7 @@ extern SDL_Texture* logoTexture;
 extern SDL_Texture* restartTexture;
 extern SDL_Texture* exitTexture;
 extern SDL_Texture* ballTexture;
+extern SDL_Texture* backTexture;
 extern Mix_Chunk* holeSound;
 extern Mix_Chunk* collisionSound;
 extern Mix_Chunk* chargeSound;

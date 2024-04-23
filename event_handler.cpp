@@ -11,12 +11,12 @@ void handleEvents(SDL_Event &e, bool &quit, bool &menuDisplayed, bool &isBallRel
             menuDisplayed = false;
             isBallReleased = true;
             startTime = high_resolution_clock::now();
-        }
+        } 
         handleMouseEvents(e);
         if (!menuDisplayed && !win && e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
             int mouseX = e.button.x;
             int mouseY = e.button.y;
-            if (mouseX >= WINDOW_WIDTH - 110 && mouseX <= WINDOW_WIDTH - 20 && mouseY >= 10 && mouseY <= 50) {
+            if (mouseX >= WINDOW_WIDTH - 100 && mouseX <= WINDOW_WIDTH - 20 && mouseY >= 10 && mouseY <= 50) {
                 resetGame(ball, obstacles, hole, score, strokes, highestScore, win, renderer);
                 strokes --;
                 if (highestScore > 0) highestScore -= 100;
@@ -27,6 +27,14 @@ void handleEvents(SDL_Event &e, bool &quit, bool &menuDisplayed, bool &isBallRel
             int mouseY = e.button.y;
             if (mouseX >= WINDOW_WIDTH - 50 && mouseX <= WINDOW_WIDTH - 10 && mouseY >= 10 && mouseY <= 50) {
                 quit = true;
+            }
+            if (mouseX >= WINDOW_WIDTH - 160 && mouseX <= WINDOW_WIDTH - 100 && mouseY >= 10 && mouseY <= 50) {
+                menuDisplayed = true;
+                resetGame(ball, obstacles, hole, score, strokes, highestScore, win, renderer);
+                startTime = high_resolution_clock::now();
+                highestScore = 0;
+                extraTimeToAdd = duration<double>(0);
+                extraTimeAdded = false;
             }
         }
     }

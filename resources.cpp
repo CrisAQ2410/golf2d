@@ -5,6 +5,7 @@ SDL_Texture* logoTexture = nullptr;
 SDL_Texture* restartTexture = nullptr;
 SDL_Texture* exitTexture = nullptr;
 SDL_Texture* ballTexture = nullptr;
+SDL_Texture* backTexture = nullptr;
 Mix_Chunk* holeSound = nullptr;
 Mix_Chunk* collisionSound = nullptr;
 Mix_Chunk* chargeSound = nullptr;
@@ -50,6 +51,14 @@ void loadResources(SDL_Renderer* renderer) {
     }
     ballTexture = SDL_CreateTextureFromSurface(renderer, ballSurface);
     SDL_FreeSurface(ballSurface);
+
+    SDL_Surface* backSurface = IMG_Load("img_src/back.png");
+    if (!backSurface) {
+        printf("Unable to load ball image: %s\n", IMG_GetError());
+        return;
+    }
+    backTexture = SDL_CreateTextureFromSurface(renderer, backSurface);
+    SDL_FreeSurface(backSurface);
 
     if (Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3) {
         printf("Mix_Init: %s\n", Mix_GetError());

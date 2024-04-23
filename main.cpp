@@ -109,10 +109,12 @@ int main(int argc, char* args[]) {
         }
 
         if (!menuDisplayed && !win) {
-            SDL_Rect restartRect = { WINDOW_WIDTH - 110, 10, 40, 40 };
+            SDL_Rect restartRect = { WINDOW_WIDTH - 100, 10, 40, 40 };
             SDL_RenderCopy(renderer, restartTexture, NULL, &restartRect);
             SDL_Rect exitRect = { WINDOW_WIDTH - 50, 10, 40, 40 };
             SDL_RenderCopy(renderer, exitTexture, NULL, &exitRect);
+            SDL_Rect backRect = { WINDOW_WIDTH - 160, 5, 50, 50 };
+            SDL_RenderCopy(renderer, backTexture, NULL, &backRect);
         }
 
         SDL_RenderPresent(renderer);

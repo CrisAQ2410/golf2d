@@ -28,6 +28,7 @@ extern int remainingTime1;
 extern high_resolution_clock::time_point startTime;
 extern duration<double> extraTimeToAdd;
 extern bool extraTimeAdded;
+extern bool menuDisplayed;
 
 void handleMouseEvents(SDL_Event& e);
 

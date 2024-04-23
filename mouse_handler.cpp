@@ -26,6 +26,13 @@ void handleMouseEvents(SDL_Event& e) {
             highestScore = 0;
             extraTimeToAdd = duration<double>(0);
             extraTimeAdded = false;
+        } else if (e.key.keysym.sym == SDLK_h && remainingTime1 == 0) {
+            menuDisplayed = true;
+            resetGame(ball, obstacles, hole, score, strokes, highestScore, win, renderer);
+            startTime = high_resolution_clock::now();
+            highestScore = 0;
+            extraTimeToAdd = duration<double>(0);
+            extraTimeAdded = false;
         }
     } else if (win) {
         previousHighestScore = score;
