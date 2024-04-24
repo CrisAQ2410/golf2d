@@ -39,7 +39,7 @@ Click **chuột trái** để vào chơi game
 
 ![](readme/main%20menu.png)
 
-Người chơi có thể ấn vào **biểu tượng** ![](img_src/exit.png){width=20} ở góc phải màn hình để thoát game
+Người chơi có thể ấn vào **biểu tượng** ![](img_src/exit.png){width=5%} ở góc phải màn hình để thoát game
 
 # 3. Các thành phần trong game
 ## 3.1. Địa hình
@@ -74,7 +74,7 @@ Các bạn chỉ cần điều khiển quả bóng sao cho nó vào hố là ok 
 
 Điểm tối đa ở một map là 200, sau lần kéo thứ nhất sẽ không bị trừ điểm, mỗi lần tiếp theo sẽ bị trừ 5 điểm/lần.
 
-Khi bóng vào lỗ, map sẽ được tự động sắp xếp lại ngẫu nhiên. Nếu bạn may mắn thì có thể bóng sẽ gần hố. Nếu cảm thấy khó quá thì bạn có thể bấm vào biểu tượng ![](img_src/restart.png){width=20} để load lại map. Thời gian vẫn sẽ giữ nguyên nhưng bạn sẽ bị trừ 100 điểm cho mỗi lần load lại hehe.
+Khi bóng vào lỗ, map sẽ được tự động sắp xếp lại ngẫu nhiên. Nếu bạn may mắn thì có thể bóng sẽ gần hố. Nếu cảm thấy khó quá thì bạn có thể bấm vào biểu tượng ![](img_src/restart.png){width=5%} để load lại map. Thời gian vẫn sẽ giữ nguyên nhưng bạn sẽ bị trừ 100 điểm cho mỗi lần load lại hehe.
 
 Bạn sẽ có thời gian mặc định là 30s, nhưng nếu bóng vào lỗ thì bạn sẽ được cộng thêm 5s. Từ đó, bạn có thể biến nó thành một game vô hạn thời gian.
 
