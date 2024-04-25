@@ -4,6 +4,8 @@
 Golf 2D là một tựa game thể thao. Dựa trên phong cách của bộ môn golf ngoài đời thật, bạn có thể trải nghiệm game một cách thật chill, và đừng quên cố gắng để đạt được điểm số cao nhất. Just chilling!
 
 1. [Cách tải game](#1-cách-tải-game)
+    - [Cách 1: Tải không bao gồm code](#cách-1)
+    - [Cách 2: Tải bao gồm code và có thể biên dịch](#cách-2)
 2. [Bắt đầu game](#2-bắt-đầu-game)
 3. [Các thành phần trong game](#3-các-thành-phần-trong-game)
     - [Địa hình](#31-địa-hình)
@@ -12,10 +14,16 @@ Golf 2D là một tựa game thể thao. Dựa trên phong cách của bộ môn
 4. [Cách chơi](#4-cách-chơi)
 5. [Điều kiện kết thúc game](#5-điều-kiện-kết-thúc-game)
 6. [Khác](#6-khác) 
-    - [Về đồ họa]()
-    - [Về source code]()
+    - [Về đồ họa](#61-về-đồ-họa)
+    - [Về source code](#62-về-source-code)
 
 # 1. Cách tải game
+## Cách 1:
+Tải game (được nén thành .zip) tại link sau: https://github.com/CrisAQ2410/golf2d/releases/tag/golf
+Cách này tiết kiệm bộ nhớ và thời gian tải đi rất nhiều (khoảng 47MB).
+Giải nén game vào một thư mục và bật Golf2D.exe lên và chơi.
+
+## Cách 2:
 **Bước 1:** Chọn Code -> Download Zip (khoảng 50MB)
 ![](readme/download.png)
    - Có đầy đủ code
@@ -88,4 +96,45 @@ Game sẽ kết thúc nếu như hết thời gian, màn hình sẽ hiện thị
 Lúc này, bạn có thể bấm **H** để quay về màn hình chính hoặc bấm **R** để chơi lại.
 
 # 6. Khác
+## 6.1. Về đồ họa
+
+Ảnh background, vật cản, bóng, hố và âm thanh được mình lấy từ link GitHub của game [Twin Golf](https://github.com/PolyMarsDev/Twini-Golf) (thư mục res) 
+
+Font chữ mình dùng là [Toon Around](https://www.dafont.com/toon-around.font)
+
+Logo và các icon được mình thu thập từ Google, đặc biệt logo được chỉnh sửa bằng phần mềm [Adobe Photoshop](https://www.adobe.com/vn_vi/products/photoshop.html)
+
+## 6.2. Về source code
+
+**Mình học SDL2 từ trang web [Lazyfoo](https://lazyfoo.net/tutorials/SDL/)!!**
+
+Folder font: chứa font chữ của game
+
+Folder img_src: chứa tất cả các ảnh được load trong game
+
+Folder sound: chứa tất cả âm thanh của game
+
+Folder source: chứa tất cả các thư viện của SDL2
+
+Các file để chạy được game: 
+- main.cpp: chứa tất cả các thư viện cần dùng, cũng như các file .h và các thông số cố định
+- ball_movement: giải thích cách di chuyển của bóng
+- check_collision và check_hole_collision: kiểm tra va chạm giữa bóng và môi trường xung quanh, va chạm với hố
+- event_handler: thực hiện sự kiện game 
+- golf_game: chứa dữ liệu về cửa sổ và dữ liệu của bóng, hố, vật cản
+- handle_collision: gần như là phần quan trọng nhất, xử lý va chạm của bóng với các vật cản sao cho nó tuân theo các định luật vật lý
+- hole_random và obstacles_random: in ra màn hình hình ảnh của hố và các vật cản một cách ngẫu nhiên 
+- mouse_handler: xử lý sự kiện chuột và bàn phím, hàm sẽ được gọi ở bên trong event_handler
+- power_bar: vẽ thanh lực cũng như định hướng cho quả bóng
+- resources: chứa tất cả các hình ảnh, âm thanh, font chữ bằng các câu lệnh của SDL2, SDL2_mixer, SDL2_image, SDL2_ttf
+- restart: reset lại các thành phần chính của game
+- time: sử dụng thư viện chrono để tính toán thời gian cho game
+- các file render: in tất cả hình ảnh, chữ lên màn hình
+
+Ngoài việc ý tưởng được bắt đầu từ việc yêu thích thể thao thì mình còn tham khảo từ 1 tựa game golf khác đó là [Twin Golf](https://github.com/PolyMarsDev/Twini-Golf):
+- Youtube: https://www.youtube.com/watch?v=iEn0ozP-jxc
+- GitHub: https://github.com/PolyMarsDev/Twini-Golf
+- Link tải game: https://polymars.itch.io/twini-golf
+
+Mình xin gửi lời cảm ơn sâu sắc tới thầy Lê Đức Trọng, thầy Trần Trường Thủy, anh Đặng Tiến Dũng đã giúp mình hoàn thành dự án game này!!!
 
