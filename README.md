@@ -1,5 +1,5 @@
 # Golf 2D - 23020696_Chu Anh Quoc
-- Thử nghiệm game:
+- Thử nghiệm game và giải thích code: https://youtu.be/AU6aNSbnL8M
 # Giới thiệu game
 Golf 2D là một tựa game thể thao. Dựa trên phong cách của bộ môn golf ngoài đời thật, bạn có thể trải nghiệm game một cách thật chill, và đừng quên cố gắng để đạt được điểm số cao nhất. Just chilling!
 
